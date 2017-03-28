@@ -4,8 +4,10 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.canvas.Canvas?>
-<GridPane fx:controller="simulationview.Controller"
-          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
-
-        <Canvas width="400" height="400" fx:id="canvas"/>
-</GridPane>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<StackPane fx:controller="simulationview.Controller"
+           xmlns:fx="http://javafx.com/fxml" alignment="center" fx:id="stackPane">
+                <Canvas width="400" height="400" fx:id="canvas"/>
+                <AnchorPane fx:id="anchorPane"></AnchorPane>
+</StackPane>
