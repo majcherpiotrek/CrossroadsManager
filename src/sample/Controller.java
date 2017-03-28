@@ -21,7 +21,10 @@ public class Controller implements Initializable{
         gc.setFill(Color.AQUA);
         gc.setStroke(Color.RED);
 
-        gc.strokeLine(0,0,50,50);
+        gc.strokeLine(5,5,50,50);
+        gc.strokeLine(10,0,60,50);
         gc.fillOval(50,50,20,20);
+        gc.fillOval(60,40,20,20);
+        gc.fillOval(3,0, 20,20);
     }
 }
