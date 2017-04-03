@@ -34,7 +34,7 @@ public class RoadModel implements StraightLinesShapeInterface{
         this.totalLanesNum = totalLanesNum;
         this.orientation = orientation;
         this.leftUpperCorner = leftUpperCorner;
-        if(this.separatingLineLength < this.roadLength)
+        if(this.separatingLineLength > this.roadLength)
             this.separatingLineLength = roadLength;
 
         this.computeLines();
@@ -42,6 +42,57 @@ public class RoadModel implements StraightLinesShapeInterface{
 
     private void computeLines(){
         switch (orientation){
+            case VERTICAL:{
+                /**
+                 * Add left edge of the road to the lines array
+                 */
+                lines.add( new StraightLine(
+                        leftUpperCorner,
+                        new Point2D(leftUpperCorner.getX(), leftUpperCorner.getY() + this.roadLength))
+                );
+
+                /**
+                 * Add right edge of the road to the lines array
+                 */
+                lines.add( new StraightLine(
+                        new Point2D(leftUpperCorner.getX() + this.totalLanesNum*this.laneWidth, leftUpperCorner.getY()),
+                        new Point2D(leftUpperCorner.getX() + this.totalLanesNum*this.laneWidth, leftUpperCorner.getY() + this.roadLength )
+                ));
+
+                /**
+                 * Draw lines separating the lanes
+                 */
+                Double lengthDrawn = 0.0;
+                Double spaceBetweenLines = this.separatingLineLength/3;
+                for(int i = 1; i <= this.totalLanesNum - 1; i++){
+                    Point2D startingPoint = new Point2D(this.leftUpperCorner.getX() + i*this.laneWidth, this.leftUpperCorner.getY() + lengthDrawn);
+
+                    //Drawing the separating line along all the road length
+                    while(lengthDrawn < this.roadLength){
+
+                        //Make sure the separating line does not get longer then the borders
+                        Boolean lastLine = false;
+                        if(lengthDrawn+this.separatingLineLength > this.roadLength)
+                            lastLine = true;
+
+
+                        lines.add( new StraightLine(
+                                startingPoint,
+                                new Point2D(startingPoint.getX(), startingPoint.getY() + ((lastLine) ? this.roadLength-lengthDrawn : this.separatingLineLength))
+                        ));
+
+                        //Updating the starting point after adding the line
+                        startingPoint = new Point2D(startingPoint.getX(),
+                                                        startingPoint.getY()+this.separatingLineLength+spaceBetweenLines
+                        );
+
+                        //Update the drawn length with the line and space after the line
+                        lengthDrawn += (this.separatingLineLength + spaceBetweenLines);
+                    }
+                }
+
+                break;
+            }
             case HORIZONTAL:{
                 /**
                  * Add upper edge of the road to the lines array
@@ -55,8 +106,8 @@ public class RoadModel implements StraightLinesShapeInterface{
                  * Add lower edge of the road to the lines array
                  */
                 lines.add( new StraightLine(
-                        new Point2D(leftUpperCorner.getX(), leftUpperCorner.getY() - (this.totalLanesNum*this.laneWidth)),
-                        new Point2D(leftUpperCorner.getX() + this.roadLength, leftUpperCorner.getY() - (this.totalLanesNum*this.laneWidth) )
+                        new Point2D(leftUpperCorner.getX(), leftUpperCorner.getY() + (this.totalLanesNum*this.laneWidth)),
+                        new Point2D(leftUpperCorner.getX() + this.roadLength, leftUpperCorner.getY() + (this.totalLanesNum*this.laneWidth) )
                 ));
 
                 /**
@@ -65,7 +116,7 @@ public class RoadModel implements StraightLinesShapeInterface{
                 Double lengthDrawn = 0.0;
                 Double spaceBetweenLines = this.separatingLineLength/3;
                 for(int i = 1; i <= this.totalLanesNum - 1; i++){
-                    Point2D startingPoint = new Point2D(this.leftUpperCorner.getX() + lengthDrawn, this.leftUpperCorner.getY() - i*this.laneWidth);
+                    Point2D startingPoint = new Point2D(this.leftUpperCorner.getX() + lengthDrawn, this.leftUpperCorner.getY() + i*this.laneWidth);
 
                     //Drawing the separating line along all the road length
                     while(lengthDrawn < this.roadLength){
@@ -83,17 +134,13 @@ public class RoadModel implements StraightLinesShapeInterface{
 
                         //Updating the starting point after adding the line
                         startingPoint = new Point2D(startingPoint.getX()+this.separatingLineLength+spaceBetweenLines,
-                                                        startingPoint.getY()
+                                startingPoint.getY()
                         );
 
                         //Update the drawn length with the line and space after the line
                         lengthDrawn += (this.separatingLineLength + spaceBetweenLines);
                     }
                 }
-
-                break;
-            }
-            case VERTICAL:{
                 break;
             }
         }
