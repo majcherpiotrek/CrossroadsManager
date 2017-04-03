@@ -13,6 +13,7 @@ import javafx.scene.paint.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import simulationmodels.CrossroadsModel;
 import simulationmodels.RoadModel;
 import util.SimpleShapePainter;
 
@@ -41,10 +42,15 @@ public class Controller implements Initializable{
         context.setFill(Color.CHOCOLATE);
         context.fillRect(0,0,800,600);
 
-        RoadModel roadModelV = new RoadModel(600.0,20.0,2, RoadModel.Orientation.VERTICAL, new Point2D(380.0,0.0));
-        RoadModel roadModelH = new RoadModel(800.0,20.0,2, RoadModel.Orientation.HORIZONTAL, new Point2D(0.0,280.0));
-        SimpleShapePainter.drawShape(roadModelV,context);
-        SimpleShapePainter.drawShape(roadModelH,context);
+        //RoadModel roadModelV = new RoadModel(600.0,20.0,2, RoadModel.Orientation.VERTICAL, new Point2D(380.0,0.0));
+        //RoadModel roadModelH = new RoadModel(800.0,20.0,2, RoadModel.Orientation.HORIZONTAL, new Point2D(0.0,280.0));
+        //SimpleShapePainter.drawShape(roadModelV,context);
+        //SimpleShapePainter.drawShape(roadModelH,context);
+
+        CrossroadsModel crossroadsModel = new CrossroadsModel(new Point2D(380.0,280.0),
+                2,20.0,100,100,100,100);
+        SimpleShapePainter.drawShape(crossroadsModel,context);
+
 
         for(int i=0; i < 100; i++)
             anchorPane.getChildren().add(new Rectangle(0+20*i,100,10,10));

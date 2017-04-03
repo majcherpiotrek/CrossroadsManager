@@ -27,6 +27,14 @@ public class RoadModel implements StraightLinesShapeInterface{
     private Point2D leftUpperCorner;
     private Double separatingLineLength = 10.0;
 
+    /**
+     * The constructor of the road model
+     * @param roadLength the length of the road
+     * @param laneWidth the width of each lane
+     * @param totalLanesNum number of the lanes on the road (total, not only one way)
+     * @param orientation horizontal or vertical orientation of the road (inner enum class)
+     * @param leftUpperCorner the left upper corner of the upper (horizontal orientation) or left (vertical orientation) edge of the road
+     */
     public RoadModel(Double roadLength, Double laneWidth, Integer totalLanesNum, Orientation orientation, Point2D leftUpperCorner) {
         this.lines = new ArrayList<>();
         this.roadLength = roadLength;
@@ -186,8 +194,11 @@ public class RoadModel implements StraightLinesShapeInterface{
         return leftUpperCorner;
     }
 
-    public void setLeftUpperCorner(Point2D leftUpperCorner) {
-        this.leftUpperCorner = leftUpperCorner;
+    public void move(Point2D transitionVector) {
+        this.leftUpperCorner = new Point2D(
+                this.leftUpperCorner.getX() + transitionVector.getX(),
+                this.leftUpperCorner.getY() + transitionVector.getY()
+        );
         this.computeLines();
     }
 
