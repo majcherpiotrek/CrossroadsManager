@@ -16,7 +16,9 @@ import java.util.List;
 /**
  * Class representing traffic lights. Lights are defined by
  * the direction of the road on which they are situated:
- * North, East, South or West.
+ * North, East, South or West. If the road is coming TO the crossroads
+ * FROM the east, then the lights have the direction WEST,
+ * because the road is going to the west.
  * Created by Piotrek on 09.04.2017.
  */
 public class TrafficLightsModel {
@@ -27,8 +29,11 @@ public class TrafficLightsModel {
 
     enum Light { RED, GREEN }
 
+    //direction of the road
     private Direction direction;
+    //will be used for checking which light is currently on (so we don't have to check the shape's color)
     private Light light = Light.RED;
+    //shape of the light to be displayed on the screen
     private Shape lightsView = null;
 
     public TrafficLightsModel(Direction direction) {

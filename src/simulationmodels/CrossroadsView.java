@@ -21,11 +21,15 @@ public class CrossroadsView implements StraightLinesShapeInterface{
     private RoadModel roadSOUTH;
     private RoadModel roadWEST;
 
+    //Four lights on the crossroads - one for each road
+    //TODO What if the road will have more lanes then one?
     private TrafficLightsModel lightsNORTH = null;
     private TrafficLightsModel lightsEAST = null;
     private TrafficLightsModel lightsSOUTH = null;
     private TrafficLightsModel lightsWEST = null;
 
+    //The point where the road from the North and from the West meet
+    //(left upper corner of the square of the crossroads)
     private Point2D leftUpperCorner;
 
     /**

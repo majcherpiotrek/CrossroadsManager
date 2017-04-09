@@ -4,12 +4,18 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 
 /**
+ * Class responsible for changing the lights on the crossroads.
  * Created by Piotrek on 09.04.2017.
  */
 public class TrafficLightsController implements Runnable{
 
     private CrossroadsView crossroadsView;
 
+    /**
+     * Fields for duration of the lights on particular roads.
+     * This will be the end point for the API
+     */
+    //NOT USED YET
     private int redLightDurationNorth;
     private int greenLightDurationNorth;
 
