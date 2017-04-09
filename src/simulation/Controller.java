@@ -52,7 +52,7 @@ public class Controller implements Initializable{
         SimpleShapePainter.drawShape(crossroadsModel,context);
 
 
-        for(int i=0; i < 100; i++)
+        for(int i=0; i < 4; i++)
             anchorPane.getChildren().add(new Rectangle(0+20*i,100,10,10));
 
         ArrayList<TranslateTransition> transList = new ArrayList<>();
@@ -65,7 +65,15 @@ public class Controller implements Initializable{
             transList.get(transList.size()-1).setCycleCount(10);
             transList.get(transList.size()-1).play();
         }
-
+        TrafficManager manager = new TrafficManager(crossroadsModel,anchorPane);
+        Thread managerThread = new Thread(manager);
+//        managerThread.start();
+//        try {
+//            Thread.sleep(60000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        managerThread.interrupt();
         new Thread(() -> {
             for(int i=0; i<15;i++)
                 try {
@@ -79,7 +87,6 @@ public class Controller implements Initializable{
                     transList.get(i).pause();
 
         }).start();
-
 
 
 

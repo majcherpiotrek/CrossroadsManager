@@ -27,6 +27,9 @@ public class RoadModel implements StraightLinesShapeInterface{
     private Point2D leftUpperCorner;
     private Double separatingLineLength = 10.0;
 
+    private TrafficLightsModel lightsA = null;
+    private TrafficLightsModel lightsB = null;
+
     /**
      * The constructor of the road model
      * @param roadLength the length of the road
@@ -46,6 +49,16 @@ public class RoadModel implements StraightLinesShapeInterface{
             this.separatingLineLength = roadLength;
 
         this.computeLines();
+    }
+
+    /**
+     * A method for adding traffic lights to the road
+     * @param lightsA lights on E->W direction on horizontal road, S->N on vertical
+     * @param lightsB lights on W->E direction on horizontal road, N->S on vertical
+     */
+    public void setLights(TrafficLightsModel lightsA, TrafficLightsModel lightsB){
+        this.lightsA=lightsA;
+        this.lightsB=lightsB;
     }
 
     private void computeLines(){
