@@ -83,8 +83,14 @@ public class Controller implements Initializable{
             transList.get(transList.size()-1).play();
         }
 
+        anchorPane.getChildren().add(crossroadsView.getLightsEAST().getLightsView());
+        anchorPane.getChildren().add(crossroadsView.getLightsNORTH().getLightsView());
+        anchorPane.getChildren().add(crossroadsView.getLightsWEST().getLightsView());
+        anchorPane.getChildren().add(crossroadsView.getLightsSOUTH().getLightsView());
+
+
         Thread t = new Thread(trafficLightsController);
-      //  t.start();
+        t.start();
 
 
        // t.interrupt();
