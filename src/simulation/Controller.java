@@ -91,10 +91,5 @@ public class Controller implements Initializable{
 
         Thread t = new Thread(trafficLightsController);
         t.start();
-
-
-       // t.interrupt();
-
-
     }
 }
