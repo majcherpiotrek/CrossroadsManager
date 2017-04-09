@@ -19,7 +19,7 @@ import java.util.List;
  * North, East, South or West.
  * Created by Piotrek on 09.04.2017.
  */
-public class TrafficLightsModel implements Runnable {
+public class TrafficLightsModel {
 
     public enum Direction{
         North,East,South,West
@@ -59,27 +59,10 @@ public class TrafficLightsModel implements Runnable {
             this.lightsView.setFill(Color.RED);
     }
 
-
-    @Override
-    public void run() {
-
-        FillTransition lightChanges = new FillTransition(Duration.millis(3000),this.lightsView,Color.RED,Color.GREEN);
-        lightChanges.setCycleCount(10);
-        lightChanges.play();
-        try{
-            while (! Thread.interrupted()){
-                this.light = Light.RED;
-                this.lightsView.setFill(Color.RED);
-                System.out.println(this.light);
-                Thread.sleep(5000);
-                this.light = Light.GREEN;
-                this.lightsView.setFill(Color.GREEN);
-                System.out.println(this.light);
-                Thread.sleep(5000);
-            }
-        }catch (InterruptedException ex){
-            System.err.println("Lights stopped working");
-        }
+    public void changeLight(Light light){
+        this.light = light;
+        if(this.lightsView != null)
+            this.lightsView.setFill((this.light == Light.GREEN) ? Color.GREEN : Color.RED);
     }
 
 }
