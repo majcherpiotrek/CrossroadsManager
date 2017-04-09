@@ -21,7 +21,6 @@ public class RoadModel implements StraightLinesShapeInterface {
 
     private ArrayList<StraightLine> lines;
 
-
     private Double roadLength;
     private Double laneWidth;
     private Integer totalLanesNum;
@@ -195,14 +194,6 @@ public class RoadModel implements StraightLinesShapeInterface {
 
     public Point2D getLeftUpperCorner() {
         return leftUpperCorner;
-    }
-
-    public void move(Point2D transitionVector) {
-        this.leftUpperCorner = new Point2D(
-                this.leftUpperCorner.getX() + transitionVector.getX(),
-                this.leftUpperCorner.getY() + transitionVector.getY()
-        );
-        this.computeLines();
     }
 
     @Override
