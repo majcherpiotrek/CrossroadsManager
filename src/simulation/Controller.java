@@ -1,9 +1,12 @@
 package simulation;
 
+import javafx.animation.RotateTransition;
+import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -12,6 +15,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
+import simulationmodels.CarModel;
 import simulationmodels.CrossroadsView;
 import simulationmodels.TrafficLightsController;
 import simulationmodels.TrafficLightsModel;
@@ -88,7 +92,27 @@ public class Controller implements Initializable{
         anchorPane.getChildren().add(crossroadsView.getLightsWEST().getLightsView());
         anchorPane.getChildren().add(crossroadsView.getLightsSOUTH().getLightsView());
 
+        CarModel car = new CarModel(new Point2D(220, 210), 15.0, 30.0, CarModel.Facing.WEST, Color.GRAY);
+        Group carGroup = car.getCarView();
+        anchorPane.getChildren().add(carGroup);
+        TranslateTransition tsr = new TranslateTransition();
+        TranslateTransition tsr1 = new TranslateTransition();
+        tsr.setDuration(Duration.seconds(5));
+        tsr.setNode(carGroup);
+        tsr.setToY(-50);
+        tsr1.setDuration(Duration.seconds(5));
+        tsr1.setNode(carGroup);
+        tsr1.setToX(50);
+        RotateTransition rtsr = new RotateTransition();
+        rtsr.setNode(carGroup);
+        rtsr.setDuration(Duration.seconds(2.0));
+        rtsr.setByAngle(90);
+        rtsr.setAutoReverse(true);
 
+        SequentialTransition sqt = new SequentialTransition(tsr, rtsr, tsr1);
+        sqt.setAutoReverse(true);
+        sqt.play();
+        car.setFacing(CarModel.Facing.WEST);
         Thread t = new Thread(trafficLightsController);
         t.start();
     }
