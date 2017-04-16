@@ -15,6 +15,7 @@ import javafx.util.Duration;
 import simulationmodels.CrossroadsView;
 import simulationmodels.TrafficLightsController;
 import simulationmodels.TrafficLightsModel;
+import util.CanvasPane;
 import util.SimpleShapePainter;
 
 
@@ -28,14 +29,16 @@ public class Controller implements Initializable{
     private @FXML
     StackPane stackPane;
 
-    private @FXML
-    Canvas canvas;
-
-    private @FXML
-    AnchorPane anchorPane;
-
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+
+        /**
+         * Create the Canvas and add it to the window
+         */
+        CanvasPane canvasPane = new CanvasPane(800,600);
+        Canvas canvas = canvasPane.getCanvas();
+        AnchorPane anchorPane = new AnchorPane();
+        stackPane.getChildren().addAll(canvasPane,anchorPane);
 
         /**
          * Prepare background
@@ -83,10 +86,10 @@ public class Controller implements Initializable{
             transList.get(transList.size()-1).play();
         }
 
-        anchorPane.getChildren().add(crossroadsView.getLightsEAST().getLightsView());
-        anchorPane.getChildren().add(crossroadsView.getLightsNORTH().getLightsView());
-        anchorPane.getChildren().add(crossroadsView.getLightsWEST().getLightsView());
-        anchorPane.getChildren().add(crossroadsView.getLightsSOUTH().getLightsView());
+        canvasPane.getChildren().add(crossroadsView.getLightsEAST().getLightsView());
+        canvasPane.getChildren().add(crossroadsView.getLightsNORTH().getLightsView());
+        canvasPane.getChildren().add(crossroadsView.getLightsWEST().getLightsView());
+        canvasPane.getChildren().add(crossroadsView.getLightsSOUTH().getLightsView());
 
 
         Thread t = new Thread(trafficLightsController);
