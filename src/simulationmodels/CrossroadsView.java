@@ -3,7 +3,6 @@ package simulationmodels;
 import interfaces.StraightLinesShapeInterface;
 import javafx.geometry.Point2D;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Shape;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,17 +15,10 @@ import java.util.List;
  */
 public class CrossroadsView implements StraightLinesShapeInterface{
 
-    private RoadModel roadNORTH;
-    private RoadModel roadEAST;
-    private RoadModel roadSOUTH;
-    private RoadModel roadWEST;
-
-    //Four lights on the crossroads - one for each road
-    //TODO What if the road will have more lanes then one?
-    private TrafficLightsModel lightsNORTH = null;
-    private TrafficLightsModel lightsEAST = null;
-    private TrafficLightsModel lightsSOUTH = null;
-    private TrafficLightsModel lightsWEST = null;
+    private RoadView roadNORTH;
+    private RoadView roadEAST;
+    private RoadView roadSOUTH;
+    private RoadView roadWEST;
 
     //The point where the road from the North and from the West meet
     //(left upper corner of the square of the crossroads)
@@ -53,124 +45,63 @@ public class CrossroadsView implements StraightLinesShapeInterface{
         /**
          * Create the road from the NORTH
          */
-        roadNORTH = new RoadModel(len_roadN,
+        roadNORTH = new RoadView(len_roadN,
                 laneWidth,
                 lanesNum,
-                RoadModel.Orientation.VERTICAL,
+                RoadView.Orientation.VERTICAL,
                 new Point2D(this.leftUpperCorner.getX(), this.leftUpperCorner.getY() - len_roadN)
         );
 
         /**
          * Create the road from the EAST
          */
-        roadEAST = new RoadModel(len_roadE,
+        roadEAST = new RoadView(len_roadE,
                 laneWidth,
                 lanesNum,
-                RoadModel.Orientation.HORIZONTAL,
+                RoadView.Orientation.HORIZONTAL,
                 new Point2D(this.leftUpperCorner.getX() + lanesNum*laneWidth, this.leftUpperCorner.getY())
         );
 
         /**
          * Create the road from the SOUTH
          */
-        roadSOUTH = new RoadModel(len_roadS,
+        roadSOUTH = new RoadView(len_roadS,
                 laneWidth,
                 lanesNum,
-                RoadModel.Orientation.VERTICAL,
+                RoadView.Orientation.VERTICAL,
                 new Point2D(this.leftUpperCorner.getX(), this.leftUpperCorner.getY() + lanesNum*laneWidth)
         );
 
         /**
          * Create the road from the WEST
          */
-        roadWEST = new RoadModel(len_roadW,
+        roadWEST = new RoadView(len_roadW,
                 laneWidth,
                 lanesNum,
-                RoadModel.Orientation.HORIZONTAL,
+                RoadView.Orientation.HORIZONTAL,
                 new Point2D(this.leftUpperCorner.getX() - len_roadW, this.leftUpperCorner.getY())
         );
     }
 
-    public RoadModel getRoadNORTH() {
+    public RoadView getRoadNORTH() {
         return roadNORTH;
     }
 
-    public RoadModel getRoadEAST() {
+    public RoadView getRoadEAST() {
         return roadEAST;
     }
 
-    public RoadModel getRoadSOUTH() {
+    public RoadView getRoadSOUTH() {
         return roadSOUTH;
     }
 
-    public RoadModel getRoadWEST() {
+    public RoadView getRoadWEST() {
         return roadWEST;
     }
 
     public Point2D getLeftUpperCorner() {
         return leftUpperCorner;
     }
-
-    public TrafficLightsModel getLightsNORTH() {
-        return lightsNORTH;
-    }
-
-    public void setLightsNORTH(TrafficLightsModel lightsNORTH) {
-        this.lightsNORTH = lightsNORTH;
-        Circle circle = new Circle(
-                this.leftUpperCorner.getX()+0.5*this.roadNORTH.getLaneWidth(),
-                this.leftUpperCorner.getY(),
-                this.roadNORTH.getLaneWidth()/2
-
-        );
-        this.lightsNORTH.setLightsView(circle);
-    }
-
-    public TrafficLightsModel getLightsEAST() {
-        return lightsEAST;
-    }
-
-    public void setLightsEAST(TrafficLightsModel lightsEAST) {
-        this.lightsEAST = lightsEAST;
-        Circle circle = new Circle(
-                this.leftUpperCorner.getX(),
-                this.leftUpperCorner.getY()+1.5*this.roadEAST.getLaneWidth(),
-                this.roadEAST.getLaneWidth()/2
-
-        );
-        this.lightsEAST.setLightsView(circle);
-    }
-
-    public TrafficLightsModel getLightsSOUTH() {
-        return lightsSOUTH;
-    }
-
-    public void setLightsSOUTH(TrafficLightsModel lightsSOUTH) {
-        this.lightsSOUTH = lightsSOUTH;
-        Circle circle = new Circle(
-                this.leftUpperCorner.getX()+1.5*this.roadSOUTH.getLaneWidth(),
-                this.leftUpperCorner.getY()+this.roadEAST.getLaneWidth()*this.roadEAST.getTotalLanesNum(),
-                this.roadEAST.getLaneWidth()/2
-        );
-        this.lightsSOUTH.setLightsView(circle);
-    }
-
-    public TrafficLightsModel getLightsWEST() {
-        return lightsWEST;
-    }
-
-    public void setLightsWEST(TrafficLightsModel lightsWEST) {
-        this.lightsWEST = lightsWEST;
-        Circle circle = new Circle(
-                this.leftUpperCorner.getX()+this.roadNORTH.getTotalLanesNum()*this.roadNORTH.getLaneWidth(),
-                this.leftUpperCorner.getY()+0.5*this.roadWEST.getLaneWidth(),
-                this.roadEAST.getLaneWidth()/2
-
-        );
-        this.lightsWEST.setLightsView(circle);
-    }
-
-
 
     @Override
     public List<StraightLine> getLines() {

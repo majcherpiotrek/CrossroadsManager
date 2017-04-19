@@ -1,73 +1,38 @@
 package simulationmodels;
 
-import com.sun.javafx.scene.traversal.Direction;
-import interfaces.StraightLinesShapeInterface;
-import javafx.animation.FillTransition;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Shape;
-import javafx.util.Duration;
-import util.SimpleShapePainter;
-
-import java.util.List;
-
 /**
- * Class representing traffic lights. Lights are defined by
- * the direction of the road on which they are situated:
- * North, East, South or West. If the road is coming TO the crossroads
- * FROM the east, then the lights have the direction WEST,
- * because the road is going to the west.
+ * Class responsible for changing the lights in the TrafficLightsView.
  * Created by Piotrek on 09.04.2017.
  */
-public class TrafficLightsModel {
+public class TrafficLightsModel implements Runnable{
 
-    public enum Direction{
-        North,East,South,West
+    private TrafficLightsView trafficLightsView;
+    private int redLightDuration;
+    private int greenLightDuration;
+
+    public TrafficLightsModel(TrafficLightsView trafficLightsView, int redLightDuration, int greenLightDuration) {
+        this.trafficLightsView = trafficLightsView;
+        this.redLightDuration = redLightDuration;
+        this.greenLightDuration = greenLightDuration;
     }
 
-    enum Light { RED, GREEN }
-
-    //direction of the road
-    private Direction direction;
-    //will be used for checking which light is currently on (so we don't have to check the shape's color)
-    private Light light = Light.RED;
-    //shape of the light to be displayed on the screen
-    private Shape lightsView = null;
-
-    public TrafficLightsModel(Direction direction) {
-        this.direction = direction;
+    public TrafficLightsView getTrafficLightsView() {
+        return trafficLightsView;
     }
 
-    public Direction getDirection() {
-        return direction;
-    }
+    @Override
+    public void run() {
+        try{
+            trafficLightsView.changeLight(TrafficLightsView.Light.RED);
 
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+            while( ! Thread.interrupted() ){
+                trafficLightsView.changeLight(TrafficLightsView.Light.GREEN);
+                Thread.sleep(greenLightDuration);
+                trafficLightsView.changeLight(TrafficLightsView.Light.RED);
+                Thread.sleep(redLightDuration);
+            }
+        }catch (InterruptedException ex){
+            System.out.println("Traffic lights modelling stopped.");
+        }
     }
-
-    public Light getLight() {
-        return light;
-    }
-
-    public Node getLightsView() {
-        return lightsView;
-    }
-
-    public void setLightsView(Shape lightsView) {
-        this.lightsView = lightsView;
-        if (this.light == Light.GREEN)
-            this.lightsView.setFill(Color.GREEN);
-        else
-            this.lightsView.setFill(Color.RED);
-    }
-
-    public void changeLight(Light light){
-        this.light = light;
-        if(this.lightsView != null)
-            this.lightsView.setFill((this.light == Light.GREEN) ? Color.GREEN : Color.RED);
-    }
-
 }
