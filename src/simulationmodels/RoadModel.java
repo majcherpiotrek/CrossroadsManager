@@ -3,6 +3,7 @@ package simulationmodels;
 import javafx.scene.shape.Rectangle;
 
 /**
+ * Class for modelling a road with possible traffic lights on both ends.
  * Created by Piotrek on 19.04.2017.
  */
 public class RoadModel {

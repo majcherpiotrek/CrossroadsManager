@@ -12,10 +12,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
-import simulationmodels.CrossroadsView;
-import simulationmodels.RoadModel;
-import simulationmodels.TrafficLightsModel;
-import simulationmodels.TrafficLightsView;
+import simulationmodels.*;
 import util.CanvasPane;
 import util.SimpleShapePainter;
 
@@ -52,7 +49,7 @@ public class Controller implements Initializable{
          * Draw the crossroads
          */
         CrossroadsView crossroadsView = new CrossroadsView(new Point2D(380.0,280.0),
-                2,20.0,100,100,100,100);
+                2,40.0,260,360,260,360);
         SimpleShapePainter.drawShape(crossroadsView,context);
         /**
          * Add traffic lights to the crossroads
@@ -85,20 +82,63 @@ public class Controller implements Initializable{
         canvasPane.getChildren().add(roadW.getTrafficLightsModelEndA().getTrafficLightsView().getLightsView());
         canvasPane.getChildren().add(roadW.getTrafficLightsModelEndB().getTrafficLightsView().getLightsView());
 
+        TrafficManager manager = new TrafficManager(roadN,roadE,roadS,roadW,anchorPane);
+        new Thread(manager).start();
+//        new Thread(() ->{
+//            for(int i=0; i < 4; i++) {
+//                CarModel carModel = new CarModel(0 + 20 * i, 100, 10, 10);
+//                carModel.addTransition(100,0,20);
+//                carModel.addTransition(0,100,20);
+//                carModel.addTransition(-100,0,20);
+//                carModel.addTransition(0,-100,20);
+//                anchorPane.getChildren().add(carModel);
+//                new Thread(()->{
+//
+//                    try {
+//                        carModel.start();
+//                        Thread.sleep(2000);
+//                        carModel.stop();
+//                        System.out.println("STOP");
+//                        Thread.sleep(10000);
+//                        System.out.println("Staruje znowu!");
+//                        carModel.start();
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//
+//                }).start();
+//            }
 
-        for(int i=0; i < 4; i++)
-            anchorPane.getChildren().add(new Rectangle(0+20*i,100,10,10));
+////            ArrayList<TranslateTransition> transList = new ArrayList<>();
+////            for(Node node : anchorPane.getChildren()){
+////                transList.add(new TranslateTransition());
+////                transList.get(transList.size()-1).setDuration(Duration.seconds(2));
+////                transList.get(transList.size()-1).setNode(node);
+////                transList.get(transList.size()-1).setFromX(500);
+////                transList.get(transList.size()-1).setFromY(300);
+////                transList.get(transList.size()-1).setToY(100);
+////                transList.get(transList.size()-1).setToY(100);
+////                transList.get(transList.size()-1).setToX(50);
+////                transList.get(transList.size()-1).setToY(100);
+////                transList.get(transList.size()-1).setAutoReverse(true);
+////                transList.get(transList.size()-1).setCycleCount(10);
+////                transList.get(transList.size()-1).play();
+////                try {
+////                    Thread.sleep(5000);
+////                } catch (InterruptedException e) {
+////                    e.printStackTrace();
+////                }
+////                transList.get(transList.size()-1).pause();
+////                try {
+////                    Thread.sleep(1000);
+////                } catch (InterruptedException e) {
+////                    e.printStackTrace();
+////                }
+//                //transList.get(transList.size()-1).play();
+//
+//            }
+//        }).start();
 
-        ArrayList<TranslateTransition> transList = new ArrayList<>();
-        for(Node node : anchorPane.getChildren()){
-            transList.add(new TranslateTransition());
-            transList.get(transList.size()-1).setDuration(Duration.seconds(10));
-            transList.get(transList.size()-1).setNode(node);
-            transList.get(transList.size()-1).setToY(200);
-            transList.get(transList.size()-1).setAutoReverse(true);
-            transList.get(transList.size()-1).setCycleCount(10);
-            transList.get(transList.size()-1).play();
-        }
         new Thread(roadN.getTrafficLightsModelEndA()).start();
         new Thread(roadN.getTrafficLightsModelEndB()).start();
     }
