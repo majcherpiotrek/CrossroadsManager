@@ -49,7 +49,7 @@ public class Controller implements Initializable{
          * Draw the crossroads
          */
         CrossroadsView crossroadsView = new CrossroadsView(new Point2D(380.0,280.0),
-                2,40.0,260,360,260,360);
+                2,40.0,260,360,250,350);
         SimpleShapePainter.drawShape(crossroadsView,context);
         /**
          * Add traffic lights to the crossroads
@@ -139,7 +139,17 @@ public class Controller implements Initializable{
 //            }
 //        }).start();
 
-        new Thread(roadN.getTrafficLightsModelEndA()).start();
-        new Thread(roadN.getTrafficLightsModelEndB()).start();
-    }
+        try {
+            new Thread(roadN.getTrafficLightsModelEndA()).start();
+            Thread.sleep(1000);
+            new Thread(roadN.getTrafficLightsModelEndB()).start();
+            Thread.sleep(1000);
+            new Thread(roadS.getTrafficLightsModelEndA()).start();
+            Thread.sleep(1000);
+            new Thread(roadS.getTrafficLightsModelEndB()).start();
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        }
 }

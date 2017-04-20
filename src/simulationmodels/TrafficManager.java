@@ -32,7 +32,7 @@ public class TrafficManager implements Runnable {
             double laneWidth = roadModelN.getRoadView().getLaneWidth();
             double roadLength = roadModelN.getRoadView().getRoadLength();
 
-            CarModel carModel = new CarModel(roadCorner.getX()+laneWidth/3, roadCorner.getY(), laneWidth/3, 2*(laneWidth/3));
+            CarModel carModel = new CarModel(roadCorner.getX()+laneWidth/3, roadCorner.getY(), laneWidth/3, laneWidth/3);
             if(i%2==0){
                 carModel.addTransition(0,2*roadLength+2*laneWidth,30);
             }else{
