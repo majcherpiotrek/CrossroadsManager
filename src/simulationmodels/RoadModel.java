@@ -1,7 +1,5 @@
 package simulationmodels;
 
-import javafx.scene.shape.Rectangle;
-
 /**
  * Class for modelling a road with possible traffic lights on both ends.
  * Created by Piotrek on 19.04.2017.
@@ -17,41 +15,46 @@ public class RoadModel {
         }
 
     public void addLightsEndA(int redLightDuration, int greenLightDuration){
-        this.trafficLightsModelEndA = new TrafficLightsModel(
-                new TrafficLightsView((roadView.getOrientation() == RoadView.Orientation.HORIZONTAL) ? TrafficLightsView.Direction.West : TrafficLightsView.Direction.North),
-                redLightDuration, greenLightDuration);
-
-        Rectangle lightsView;
-        if(roadView.getOrientation() == RoadView.Orientation.HORIZONTAL)
-            lightsView = new Rectangle(roadView.getLeftUpperCorner().getX(),
-                    roadView.getLeftUpperCorner().getY(),
-                    roadView.getLaneWidth()/3,roadView.getLaneWidth());
-        else
-            lightsView = new Rectangle(roadView.getLeftUpperCorner().getX()+roadView.getLaneWidth(),
-                    roadView.getLeftUpperCorner().getY(),
-                    roadView.getLaneWidth(),
-                    roadView.getLaneWidth()/3);
-
-        this.trafficLightsModelEndA.getTrafficLightsView().setLightsView(lightsView);
+        if(roadView.getOrientation() == RoadView.Orientation.HORIZONTAL){
+            this.trafficLightsModelEndA = new TrafficLightsModel(
+                    new TrafficLightsView(
+                            roadView.getLeftUpperCorner().getX(),
+                            roadView.getLeftUpperCorner().getY(),
+                            roadView.getLaneWidth()/3,roadView.getLaneWidth()),
+                    redLightDuration,
+                    greenLightDuration);
+        }else{
+            this.trafficLightsModelEndA = new TrafficLightsModel(
+                    new TrafficLightsView(
+                            roadView.getLeftUpperCorner().getX()+roadView.getLaneWidth(),
+                            roadView.getLeftUpperCorner().getY(),
+                            roadView.getLaneWidth(),
+                            roadView.getLaneWidth()/3),
+                    redLightDuration,
+                    greenLightDuration);
+        }
     }
 
     public void addLightsEndB(int redLightDuration, int greenLightDuration){
-        this.trafficLightsModelEndB = new TrafficLightsModel(
-                new TrafficLightsView((roadView.getOrientation() == RoadView.Orientation.HORIZONTAL) ? TrafficLightsView.Direction.East : TrafficLightsView.Direction.South),
-                redLightDuration, greenLightDuration);
-
-        Rectangle lightsView;
-        if(roadView.getOrientation() == RoadView.Orientation.HORIZONTAL)
-            lightsView = new Rectangle(roadView.getLeftUpperCorner().getX()+roadView.getRoadLength()-roadView.getLaneWidth()/3,
-                    roadView.getLeftUpperCorner().getY()+roadView.getLaneWidth(),
-                    roadView.getLaneWidth()/3,roadView.getLaneWidth());
-        else
-            lightsView = new Rectangle(roadView.getLeftUpperCorner().getX(),
-                    roadView.getLeftUpperCorner().getY()+roadView.getRoadLength()-roadView.getLaneWidth()/3,
-                    roadView.getLaneWidth(), roadView.getLaneWidth()/3);
-
-        this.trafficLightsModelEndB.getTrafficLightsView().setLightsView(lightsView);
-
+        if(roadView.getOrientation() == RoadView.Orientation.HORIZONTAL){
+            this.trafficLightsModelEndB = new TrafficLightsModel(
+                    new TrafficLightsView(
+                            roadView.getLeftUpperCorner().getX()+roadView.getRoadLength()-roadView.getLaneWidth()/3,
+                            roadView.getLeftUpperCorner().getY()+roadView.getLaneWidth(),
+                            roadView.getLaneWidth()/3,roadView.getLaneWidth()
+                            ),
+                    redLightDuration,
+                    greenLightDuration);
+        } else {
+            this.trafficLightsModelEndB = new TrafficLightsModel(
+                    new TrafficLightsView(
+                            roadView.getLeftUpperCorner().getX(),
+                            roadView.getLeftUpperCorner().getY()+roadView.getRoadLength()-roadView.getLaneWidth()/3,
+                            roadView.getLaneWidth(), roadView.getLaneWidth()/3
+                    ),
+                    redLightDuration,
+                    greenLightDuration);
+        }
     }
     public RoadView getRoadView() {
         return roadView;

@@ -20,16 +20,38 @@ public class TrafficLightsModel implements Runnable{
         return trafficLightsView;
     }
 
+    public int getRedLightDuration() {
+        return redLightDuration;
+    }
+
+    public void setRedLightDuration(int redLightDuration) {
+        this.redLightDuration = redLightDuration;
+    }
+
+    public int getGreenLightDuration() {
+        return greenLightDuration;
+    }
+
+    public void setGreenLightDuration(int greenLightDuration) {
+        this.greenLightDuration = greenLightDuration;
+    }
+
+    public TrafficLightsView.Light getLight(){
+        return this.trafficLightsView.getLight();
+    }
+
     @Override
     public void run() {
         try{
-            trafficLightsView.changeLight(TrafficLightsView.Light.RED);
-
-            while( ! Thread.interrupted() ){
-                trafficLightsView.changeLight(TrafficLightsView.Light.GREEN);
-                Thread.sleep(greenLightDuration);
+            synchronized (this) {
                 trafficLightsView.changeLight(TrafficLightsView.Light.RED);
-                Thread.sleep(redLightDuration);
+
+                while (!Thread.interrupted()) {
+                    trafficLightsView.changeLight(TrafficLightsView.Light.GREEN);
+                    Thread.sleep(greenLightDuration);
+                    trafficLightsView.changeLight(TrafficLightsView.Light.RED);
+                    Thread.sleep(redLightDuration);
+                }
             }
         }catch (InterruptedException ex){
             System.out.println("Traffic lights modelling stopped.");

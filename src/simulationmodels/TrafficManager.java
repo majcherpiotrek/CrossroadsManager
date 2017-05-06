@@ -4,54 +4,66 @@ import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Piotrek on 19.04.2017.
  */
 public class TrafficManager implements Runnable {
 
-    private RoadModel roadModelN;
-    private RoadModel roadModelE;
-    private RoadModel roadModelS;
-    private RoadModel roadModelW;
+    private List<CarModel> allCars;
+    private List<RoadModel> allRoads;
     private Pane parentPane;
 
-    public TrafficManager(RoadModel roadModelN, RoadModel roadModelE, RoadModel roadModelS, RoadModel roadModelW, Pane parentPane) {
-        this.roadModelN = roadModelN;
-        this.roadModelE = roadModelE;
-        this.roadModelS = roadModelS;
-        this.roadModelW = roadModelW;
+    public TrafficManager(List<CarModel> allCars, List<RoadModel> allRoads, Pane parentPane) {
+        this.allCars = allCars;
+        this.allRoads = allRoads;
         this.parentPane = parentPane;
     }
 
     @Override
     public void run() {
-        ArrayList<CarModel> carModelArrayList = new ArrayList<>();
-        for(int i=0; i<5; i++){
-            Point2D roadCorner = roadModelN.getRoadView().getLeftUpperCorner();
-            double laneWidth = roadModelN.getRoadView().getLaneWidth();
-            double roadLength = roadModelN.getRoadView().getRoadLength();
 
-            CarModel carModel = new CarModel(roadCorner.getX()+laneWidth/3, roadCorner.getY(), laneWidth/3, laneWidth/3);
-            if(i%2==0){
-                carModel.addTransition(0,2*roadLength+2*laneWidth,30);
-            }else{
-                carModel.addTransition(0,roadLength+0.5*laneWidth,30);
-                carModel.addTransition(-(roadLength+laneWidth/3),0,30);
-            }
-            carModelArrayList.add(carModel);
-            this.parentPane.getChildren().add(carModel);
-        }
+        new Thread(()->{
+            while(true){
 
-            try {
-                for(CarModel carModel : carModelArrayList){
-                    carModel.start();
-                    Thread.sleep(2000);
+                try {
+                    //Check collisions more or less every 30 milis
+                    Thread.sleep(30);
+
+                    //TODO Check collisions between the cars
+
+                    for( CarModel car : this.allCars){
+                        for(RoadModel road : this.allRoads){
+                            //Check if the car is crossing any of the traffic lights
+                            //check road end A
+                            if(car.getBoundsInParent().intersects(road.getTrafficLightsModelEndA().getTrafficLightsView().getBoundsInParent())){
+                                //If the light is red and the car is running -> stop the car
+                                if(road.getTrafficLightsModelEndA().getLight() == TrafficLightsView.Light.RED && !car.getStopped())
+                                    car.stop();
+                                //If the light is green and the car doesn't go -> start the car
+                                if(road.getTrafficLightsModelEndA().getLight() == TrafficLightsView.Light.GREEN && car.getStopped())
+                                    car.start();
+                            } else {
+                                // check road end B
+                                if(car.getBoundsInParent().intersects(road.getTrafficLightsModelEndB().getTrafficLightsView().getBoundsInParent())){
+                                    //If the light is red and the car is running -> stop the car
+                                    if(road.getTrafficLightsModelEndB().getLight() == TrafficLightsView.Light.RED && !car.getStopped())
+                                        car.stop();
+                                    //If the light is green and the car doesn't go -> start the car
+                                    if(road.getTrafficLightsModelEndB().getLight() == TrafficLightsView.Light.GREEN && car.getStopped())
+                                        car.start();
+                                }
+                            }
+                        }
+                    }
+
+
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-
+        }).start();
     }
 }

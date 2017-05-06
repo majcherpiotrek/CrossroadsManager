@@ -1,6 +1,7 @@
 package simulation;
 
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
@@ -70,74 +71,17 @@ public class Controller implements Initializable{
         roadW.addLightsEndA(3000,3000);
         roadW.addLightsEndB(3000,3000);
 
-        canvasPane.getChildren().add(roadN.getTrafficLightsModelEndA().getTrafficLightsView().getLightsView());
-        canvasPane.getChildren().add(roadN.getTrafficLightsModelEndB().getTrafficLightsView().getLightsView());
+        canvasPane.getChildren().add(roadN.getTrafficLightsModelEndA().getTrafficLightsView());
+        canvasPane.getChildren().add(roadN.getTrafficLightsModelEndB().getTrafficLightsView());
 
-        canvasPane.getChildren().add(roadE.getTrafficLightsModelEndA().getTrafficLightsView().getLightsView());
-        canvasPane.getChildren().add(roadE.getTrafficLightsModelEndB().getTrafficLightsView().getLightsView());
+        canvasPane.getChildren().add(roadE.getTrafficLightsModelEndA().getTrafficLightsView());
+        canvasPane.getChildren().add(roadE.getTrafficLightsModelEndB().getTrafficLightsView());
 
-        canvasPane.getChildren().add(roadS.getTrafficLightsModelEndA().getTrafficLightsView().getLightsView());
-        canvasPane.getChildren().add(roadS.getTrafficLightsModelEndB().getTrafficLightsView().getLightsView());
+        canvasPane.getChildren().add(roadS.getTrafficLightsModelEndA().getTrafficLightsView());
+        canvasPane.getChildren().add(roadS.getTrafficLightsModelEndB().getTrafficLightsView());
 
-        canvasPane.getChildren().add(roadW.getTrafficLightsModelEndA().getTrafficLightsView().getLightsView());
-        canvasPane.getChildren().add(roadW.getTrafficLightsModelEndB().getTrafficLightsView().getLightsView());
-
-        TrafficManager manager = new TrafficManager(roadN,roadE,roadS,roadW,anchorPane);
-        new Thread(manager).start();
-//        new Thread(() ->{
-//            for(int i=0; i < 4; i++) {
-//                CarModel carModel = new CarModel(0 + 20 * i, 100, 10, 10);
-//                carModel.addTransition(100,0,20);
-//                carModel.addTransition(0,100,20);
-//                carModel.addTransition(-100,0,20);
-//                carModel.addTransition(0,-100,20);
-//                anchorPane.getChildren().add(carModel);
-//                new Thread(()->{
-//
-//                    try {
-//                        carModel.start();
-//                        Thread.sleep(2000);
-//                        carModel.stop();
-//                        System.out.println("STOP");
-//                        Thread.sleep(10000);
-//                        System.out.println("Staruje znowu!");
-//                        carModel.start();
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//
-//                }).start();
-//            }
-
-////            ArrayList<TranslateTransition> transList = new ArrayList<>();
-////            for(Node node : anchorPane.getChildren()){
-////                transList.add(new TranslateTransition());
-////                transList.get(transList.size()-1).setDuration(Duration.seconds(2));
-////                transList.get(transList.size()-1).setNode(node);
-////                transList.get(transList.size()-1).setFromX(500);
-////                transList.get(transList.size()-1).setFromY(300);
-////                transList.get(transList.size()-1).setToY(100);
-////                transList.get(transList.size()-1).setToY(100);
-////                transList.get(transList.size()-1).setToX(50);
-////                transList.get(transList.size()-1).setToY(100);
-////                transList.get(transList.size()-1).setAutoReverse(true);
-////                transList.get(transList.size()-1).setCycleCount(10);
-////                transList.get(transList.size()-1).play();
-////                try {
-////                    Thread.sleep(5000);
-////                } catch (InterruptedException e) {
-////                    e.printStackTrace();
-////                }
-////                transList.get(transList.size()-1).pause();
-////                try {
-////                    Thread.sleep(1000);
-////                } catch (InterruptedException e) {
-////                    e.printStackTrace();
-////                }
-//                //transList.get(transList.size()-1).play();
-//
-//            }
-//        }).start();
+        canvasPane.getChildren().add(roadW.getTrafficLightsModelEndA().getTrafficLightsView());
+        canvasPane.getChildren().add(roadW.getTrafficLightsModelEndB().getTrafficLightsView());
 
         try {
             new Thread(roadN.getTrafficLightsModelEndA()).start();
@@ -151,5 +95,58 @@ public class Controller implements Initializable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
+        ArrayList<RoadModel> roadModels = new ArrayList<>();
+        roadModels.add(roadE);
+        roadModels.add(roadN);
+        roadModels.add(roadS);
+        roadModels.add(roadW);
+        ArrayList<CarModel> carModels = new ArrayList<>();
+        CarModel car = new CarModel(
+                roadN.getRoadView().getLeftUpperCorner().getX()+roadN.getRoadView().getLaneWidth()/3,
+                roadN.getRoadView().getLeftUpperCorner().getY(),
+                roadN.getRoadView().getLaneWidth()/3,
+                roadN.getRoadView().getLaneWidth()/3
+        );
+
+        car.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
+        car.addTransition(0, -roadN.getRoadView().getRoadLength()*2,40);
+        car.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
+        car.addTransition(0, -roadN.getRoadView().getRoadLength()*2,40);
+        car.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
+
+        carModels.add(car);
+        anchorPane.getChildren().add(car);
+        car.start();
+
+        new Thread(() -> {
+            while (true){
+                try {
+                    CarModel car2 = new CarModel(
+                            roadN.getRoadView().getLeftUpperCorner().getX()+roadN.getRoadView().getLaneWidth()/3,
+                            roadN.getRoadView().getLeftUpperCorner().getY(),
+                            roadN.getRoadView().getLaneWidth()/3,
+                            roadN.getRoadView().getLaneWidth()/3
+                    );
+
+                    car2.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
+                    car2.addTransition(0, -roadN.getRoadView().getRoadLength()*2,40);
+                    car2.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
+                    car2.addTransition(0, -roadN.getRoadView().getRoadLength()*2,40);
+                    car2.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
+
+                    carModels.add(car2);
+                    Platform.runLater(() -> anchorPane.getChildren().add(car2));
+                    car2.start();
+                    Thread.sleep(3000);
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+        TrafficManager manager = new TrafficManager(carModels, roadModels,anchorPane);
+        new Thread(manager).start();
+
         }
 }

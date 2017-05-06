@@ -1,17 +1,7 @@
 package simulationmodels;
 
-import com.sun.javafx.scene.traversal.Direction;
-import interfaces.StraightLinesShapeInterface;
-import javafx.animation.FillTransition;
-import javafx.geometry.Point2D;
-import javafx.scene.Node;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Shape;
-import javafx.util.Duration;
-import util.SimpleShapePainter;
-
-import java.util.List;
+import javafx.scene.shape.Rectangle;
 
 /**
  * Class representing traffic lights. Lights are defined by
@@ -21,53 +11,27 @@ import java.util.List;
  * because the road is going to the west.
  * Created by Piotrek on 09.04.2017.
  */
-public class TrafficLightsView {
-
-    public enum Direction{
-        North,East,South,West
-    }
+public class TrafficLightsView extends Rectangle{
 
     enum Light { RED, GREEN }
-
-    //direction of the road
-    private Direction direction;
     //will be used for checking which light is currently on (so we don't have to check the shape's color)
-    private Light light = Light.RED;
+    private Light light;
     //shape of the light to be displayed on the screen
-    private Shape lightsView = null;
+    private Rectangle lightsView = null;
 
-    public TrafficLightsView(Direction direction) {
-        this.direction = direction;
-    }
-
-    public Direction getDirection() {
-        return direction;
-    }
-
-    public void setDirection(Direction direction) {
-        this.direction = direction;
+    public TrafficLightsView(double x, double y, double width, double height) {
+        super(x,y,width,height);
+        this.setFill(Color.RED);
+        this.light = Light.RED;
     }
 
     public Light getLight() {
         return light;
     }
 
-    public Node getLightsView() {
-        return lightsView;
-    }
-
-    public void setLightsView(Shape lightsView) {
-        this.lightsView = lightsView;
-        if (this.light == Light.GREEN)
-            this.lightsView.setFill(Color.GREEN);
-        else
-            this.lightsView.setFill(Color.RED);
-    }
-
     public void changeLight(Light light){
         this.light = light;
-        if(this.lightsView != null)
-            this.lightsView.setFill((this.light == Light.GREEN) ? Color.GREEN : Color.RED);
+        this.setFill((this.light == Light.GREEN) ? Color.GREEN : Color.RED);
     }
 
 }

@@ -2,6 +2,7 @@ package simulationmodels;
 
 import javafx.animation.SequentialTransition;
 import javafx.animation.TranslateTransition;
+import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
@@ -16,6 +17,7 @@ public class CarModel extends Rectangle{
 
     private SequentialTransition sequentialTransition;
     private Boolean done = false;
+    private Boolean stopped = true;
 
     public CarModel(double x, double y, double width, double height) {
         super(x, y, width, height);
@@ -37,9 +39,16 @@ public class CarModel extends Rectangle{
     }
 
     public void start() {
+        this.stopped = false;
         sequentialTransition.play();
     }
     public void stop(){
+        this.stopped = true;
         sequentialTransition.pause();
     }
+
+    public Boolean getStopped() {
+        return stopped;
+    }
+
 }
