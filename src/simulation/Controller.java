@@ -56,20 +56,20 @@ public class Controller implements Initializable{
          * Add traffic lights to the crossroads
          */
         RoadModel roadN = new RoadModel(crossroadsView.getRoadNORTH());
-        roadN.addLightsEndA(3000,3000);
-        roadN.addLightsEndB(3000,3000);
+        roadN.addLightsEndA(5000,3000);
+        roadN.addLightsEndB(5000,3000);
 
         RoadModel roadE = new RoadModel(crossroadsView.getRoadEAST());
-        roadE.addLightsEndA(3000,3000);
-        roadE.addLightsEndB(3000,3000);
+        roadE.addLightsEndA(5000,3000);
+        roadE.addLightsEndB(5000,3000);
 
         RoadModel roadS = new RoadModel(crossroadsView.getRoadSOUTH());
-        roadS.addLightsEndA(3000,3000);
-        roadS.addLightsEndB(3000,3000);
+        roadS.addLightsEndA(5000,3000);
+        roadS.addLightsEndB(5000,3000);
 
         RoadModel roadW = new RoadModel(crossroadsView.getRoadWEST());
-        roadW.addLightsEndA(3000,3000);
-        roadW.addLightsEndB(3000,3000);
+        roadW.addLightsEndA(5000,3000);
+        roadW.addLightsEndB(5000,3000);
 
         canvasPane.getChildren().add(roadN.getTrafficLightsModelEndA().getTrafficLightsView());
         canvasPane.getChildren().add(roadN.getTrafficLightsModelEndB().getTrafficLightsView());

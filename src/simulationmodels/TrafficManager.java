@@ -30,10 +30,22 @@ public class TrafficManager implements Runnable {
                 try {
                     //Check collisions more or less every 30 milis
                     Thread.sleep(30);
+                    for (CarModel car : this.allCars) {
+                        for (CarModel secondCar : this.allCars) {
+                            if(car == secondCar)
+                                continue;
 
+                            if(car.getBoundsInParent().intersects(secondCar.getBumperX(),secondCar.getBumperY(),secondCar.getBumberWidth(),secondCar.getBumperHeight())) {
+                                secondCar.stop();
+                            }
+
+                        }
+                    }
                     //TODO Check collisions between the cars
-
+                    int j = 1;
                     for( CarModel car : this.allCars){
+
+                        //Check collisions with the traffic lights on all the roads
                         for(RoadModel road : this.allRoads){
                             //Check if the car is crossing any of the traffic lights
                             //check road end A
