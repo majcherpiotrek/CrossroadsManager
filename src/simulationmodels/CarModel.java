@@ -1,6 +1,7 @@
 package simulationmodels;
 
 import javafx.animation.SequentialTransition;
+import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
@@ -9,54 +10,81 @@ import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import util.NWSE;
 
+import java.util.ArrayDeque;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * Created by Piotrek on 16.04.2017.
  */
 public class CarModel extends Rectangle{
 
-    private SequentialTransition sequentialTransition;
+    private Queue<Transition> transitionsList;
+    private Queue<NWSE> directionsList;
+    private Transition currentTransition = null;
     private Boolean done = false;
     private Boolean stopped = true;
-    private NWSE direction;
+    private static final double bumperBuffer = 10.0;
 
     public CarModel(double x, double y, double width, double height) {
         super(x, y, width, height);
-        sequentialTransition = new SequentialTransition();
-        this.direction = null;
+        transitionsList = new ArrayDeque<>();
+        directionsList = new ArrayDeque<>();
     }
 
     public void addTransition(double moveX, double moveY, double speed){
+        //Create directions queue
+        NWSE direction = null;
+        if(moveX > 0)
+            direction = NWSE.E;
+        if(moveX < 0)
+            direction = NWSE.W;
+        if(moveY > 0)
+            direction = NWSE.S;
+        if(moveY < 0)
+            direction = NWSE.N;
+
+        this.directionsList.add(direction);
+
+        //Crete trnslations queue
         TranslateTransition t = new TranslateTransition();
         t.setNode(this);
         t.setByX(moveX);
         t.setByY(moveY);
 
-        if(moveX > 0)
-            this.direction = NWSE.E;
-        if(moveX < 0)
-            this.direction = NWSE.W;
-        if(moveY > 0)
-            this.direction = NWSE.S;
-        if(moveY < 0)
-            this.direction = NWSE.N;
 
         double distance = Math.sqrt(moveX*moveX + moveY*moveY);
         double duration = distance/speed;
 
         t.setDuration(Duration.seconds(duration));
         t.setCycleCount(1);
-        sequentialTransition.getChildren().add(t);
+        t.setOnFinished(e ->{
+            //one transition finished
+            System.out.println("finished");
+            this.transitionsList.poll();
+            this.directionsList.poll();
+            this.start();
+        });
+
+        this.transitionsList.add(t);
+
+
     }
 
     public void start() {
         this.stopped = false;
-        sequentialTransition.play();
+        if(!this.transitionsList.isEmpty()) {
+            this.transitionsList.peek().play();
+        }else{
+            this.done = true;
+        }
     }
     public void stop(){
         this.stopped = true;
-        sequentialTransition.pause();
+        if(!this.transitionsList.isEmpty()) {
+            this.transitionsList.peek().pause();
+        }
     }
 
     public Boolean getStopped() {
@@ -64,22 +92,85 @@ public class CarModel extends Rectangle{
     }
 
     public double getBumperX(){
+        switch (this.directionsList.peek()) {
+            case E: {
+                return this.getBoundsInParent().getMaxX()+1.0;
+            }
+            case W: {
+                return this.getBoundsInParent().getMinX() - 1.0;
+            }
+            case N: {
+                return this.getBoundsInParent().getMinX();
+            }
+            case S: {
+                return this.getBoundsInParent().getMinX();
+            }
+
+        }
         return this.getBoundsInParent().getMinX();
     }
 
     public double getBumperY(){
-        return this.getBoundsInParent().getMaxY()+1.0;
+
+        switch (this.directionsList.peek()) {
+            case E: {
+                return this.getBoundsInParent().getMinY();
+            }
+            case W: {
+                return this.getBoundsInParent().getMinY();
+            }
+            case N: {
+                return this.getBoundsInParent().getMinY() - 1.0;
+            }
+            case S: {
+                return this.getBoundsInParent().getMaxY() + 1.0;
+            }
+
+        }
+        return this.getBoundsInParent().getMinY();
     }
 
     public double getBumberWidth(){
-        return this.getWidth();
+
+        switch (this.directionsList.peek()) {
+            case E: {
+                return bumperBuffer;
+            }
+            case W: {
+                return bumperBuffer;
+            }
+            case N: {
+                return this.getBoundsInParent().getWidth();
+            }
+            case S: {
+                return this.getBoundsInParent().getWidth();
+            }
+
+        }
+        return bumperBuffer;
     }
 
     public double getBumperHeight() {
-        return 10.0;
+
+        switch (this.directionsList.peek()) {
+            case E: {
+                return this.getBoundsInParent().getHeight();
+            }
+            case W: {
+                return this.getBoundsInParent().getHeight();
+            }
+            case N: {
+                return bumperBuffer;
+            }
+            case S: {
+                return bumperBuffer;
+            }
+
+        }
+        return bumperBuffer;
     }
 
     public NWSE getDirection() {
-        return direction;
+        return this.directionsList.peek();
     }
 }

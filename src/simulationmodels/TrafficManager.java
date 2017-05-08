@@ -35,10 +35,10 @@ public class TrafficManager implements Runnable {
                             if(car == secondCar)
                                 continue;
 
-                            if(car.getBoundsInParent().intersects(secondCar.getBumperX(),secondCar.getBumperY(),secondCar.getBumberWidth(),secondCar.getBumperHeight())) {
+                            if(car.getBoundsInParent().intersects(secondCar.getBumperX(),secondCar.getBumperY(),secondCar.getBumberWidth(),secondCar.getBumperHeight())
+                                    && !secondCar.getStopped()) {
                                 secondCar.stop();
                             }
-
                         }
                     }
                     //TODO Check collisions between the cars
