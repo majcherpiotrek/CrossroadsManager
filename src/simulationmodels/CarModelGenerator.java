@@ -26,8 +26,9 @@ public class CarModelGenerator implements Runnable{
         private double carsWidth;
         private double carsHeight;
         private List<CarModel> generatedCarsList;
+        private List<RoadModel> roadsList;
 
-        public Generator(List<CarModel> generatedCarsList, Point2D entryPoint, Integer timeBetweenCarsMilis, List<Point3D> carRoute, Pane parent, double carsWidth, double carsHeight) {
+        public Generator(List<RoadModel> roadsList, List<CarModel> generatedCarsList, Point2D entryPoint, Integer timeBetweenCarsMilis, List<Point3D> carRoute, Pane parent, double carsWidth, double carsHeight) {
             this.generatedCarsList = generatedCarsList;
             this.entryPoint = entryPoint;
             this.timeBetweenCarsMilis = timeBetweenCarsMilis;
@@ -35,6 +36,7 @@ public class CarModelGenerator implements Runnable{
             this.parent = parent;
             this.carsWidth = carsWidth;
             this.carsHeight = carsHeight;
+            this.roadsList = roadsList;
         }
 
         @Override
@@ -44,9 +46,16 @@ public class CarModelGenerator implements Runnable{
                 for(Point3D transition : this.carRoute) {
                     carModel.addTransition(transition.getX(), transition.getY(), transition.getZ());
                 }
+                List<TrafficLightsView> lightsViewList = new LinkedList<>();
+                for(RoadModel roadModel : this.roadsList) {
+                    lightsViewList.add(roadModel.getTrafficLightsModelEndA().getTrafficLightsView());
+                    lightsViewList.add(roadModel.getTrafficLightsModelEndB().getTrafficLightsView());
+                }
+                carModel.setUpCarControllerThread(this.generatedCarsList,lightsViewList);
                 synchronized (this.generatedCarsList) {
                     this.generatedCarsList.add(carModel);
                     Platform.runLater(() -> parent.getChildren().add(carModel));
+                    carModel.startControllerThread();
                     carModel.start();
                 }
                 try {
@@ -60,15 +69,17 @@ public class CarModelGenerator implements Runnable{
     List<CarModel> generatedCarsList;
     private Pane parent;
     private List<Generator> carGenerators;
+    private List<RoadModel> roadsList;
 
-    public CarModelGenerator(Pane parent, List<CarModel> generatedCarsList) {
+    public CarModelGenerator(Pane parent, List<CarModel> generatedCarsList, List<RoadModel> roadsList) {
         this.generatedCarsList = generatedCarsList;
         this.parent = parent;
         this.carGenerators = new LinkedList<>();
+        this.roadsList = roadsList;
     }
 
     public void addRoadTraffic(Point2D entryPoint, Integer timeBetweenCarsMilis, List<Point3D> carRoute, double carsWidth, double carsHeight) {
-        this.carGenerators.add(new Generator(this.generatedCarsList, entryPoint, timeBetweenCarsMilis, carRoute, this.parent, carsWidth, carsHeight));
+        this.carGenerators.add(new Generator(this.roadsList, this.generatedCarsList, entryPoint, timeBetweenCarsMilis, carRoute, this.parent, carsWidth, carsHeight));
     }
 
 
@@ -82,6 +93,7 @@ public class CarModelGenerator implements Runnable{
         for( Runnable r : this.carGenerators) {
             executor.execute(r);
         }
+        System.out.println("Generator threads working!");
         while (!Thread.interrupted()) {
         }
         executor.shutdownNow();

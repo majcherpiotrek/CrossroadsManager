@@ -106,7 +106,7 @@ public class Controller implements Initializable{
         roadModels.add(roadW);
         ArrayList<CarModel> carModels = new ArrayList<>();
 
-        CarModelGenerator carModelGenerator = new CarModelGenerator(anchorPane,carModels);
+        CarModelGenerator carModelGenerator = new CarModelGenerator(anchorPane,carModels,roadModels);
         List<Point3D> roadERoutes = new LinkedList<>();
         roadERoutes.add(new Point3D(-3*roadE.getRoadView().getRoadLength(),0,40));
         carModelGenerator.addRoadTraffic(new Point2D(
@@ -163,7 +163,7 @@ public class Controller implements Initializable{
 //                }
 //            }
 //        }).start();
-        TrafficManager manager = new TrafficManager(carModels, roadModels,anchorPane);
+        TrafficManager manager = new TrafficManager(carModels, roadModels);
         new Thread(manager).start();
 
         }

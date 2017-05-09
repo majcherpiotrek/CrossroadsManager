@@ -20,17 +20,93 @@ import java.util.Queue;
  */
 public class CarModel extends Rectangle{
 
+    private class CarControllerThread implements Runnable {
+
+        private CarModel car;
+        private List<CarModel> otherCars;
+        private List<TrafficLightsView> trafficLights;
+
+        public CarControllerThread(CarModel car, List<CarModel> otherCars, List<TrafficLightsView> trafficLights) {
+            this.car = car;
+            this.otherCars = otherCars;
+            this.trafficLights = trafficLights;
+        }
+
+        @Override
+        public void run() {
+            System.out.println("Car controller thread running");
+            boolean bumped = false;
+            boolean stoppedAtLights = false;
+            while (!Thread.interrupted()) {
+                synchronized (this.car){
+                    for( CarModel carInFront : this.otherCars) {
+                        if(carInFront == this.car)
+                            continue;
+                        //checking collision
+                        if(carInFront.getBoundsInParent().intersects(
+                                this.car.getBumperX(),
+                                this.car.getBumperY(),
+                                this.car.getBumberWidth(),
+                                this.car.getBumperHeight()) &&
+                                !this.car.getStopped()) {
+                            this.car.stop();
+                            bumped = true;
+                        }
+                        //checking if collision passed
+                        if(bumped &&
+                                !carInFront.getBoundsInParent().intersects(
+                                        this.car.getBumperX(),
+                                        this.car.getBumperY(),
+                                        this.car.getBumberWidth(),
+                                        this.car.getBumperHeight()) &&
+                                this.car.getStopped()) {
+                            this.car.start();
+                            bumped = false;
+
+                        }
+                    }
+                    //checking traffic lights
+                    for(TrafficLightsView trafficLightsView : this.trafficLights) {
+                        if(this.car.getBoundsInParent().intersects(trafficLightsView.getBoundsInParent()) &&
+                                trafficLightsView.getLight() == TrafficLightsView.Light.RED &&
+                                !this.car.getStopped()) {
+                            this.car.stop();
+                            stoppedAtLights = true;
+                        }
+
+                        if(this.car.getBoundsInParent().intersects(trafficLightsView.getBoundsInParent()) &&
+                                trafficLightsView.getLight() == TrafficLightsView.Light.GREEN &&
+                                this.car.getStopped() && stoppedAtLights) {
+                            this.car.start();
+                            stoppedAtLights = false;
+                        }
+                    }
+                }
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
     private Queue<Transition> transitionsList;
     private Queue<NWSE> directionsList;
     private Transition currentTransition = null;
     private Boolean done = false;
     private Boolean stopped = true;
     private static final double bumperBuffer = 10.0;
+    private CarControllerThread carControllerThread;
 
     public CarModel(double x, double y, double width, double height) {
         super(x, y, width, height);
         transitionsList = new ArrayDeque<>();
         directionsList = new ArrayDeque<>();
+        this.carControllerThread = null;
+    }
+
+    public void setUpCarControllerThread(List<CarModel> otherCars, List<TrafficLightsView> trafficLights) {
+        this.carControllerThread = new CarControllerThread(this, otherCars, trafficLights);
     }
 
     public void addTransition(double moveX, double moveY, double speed){
@@ -71,7 +147,9 @@ public class CarModel extends Rectangle{
 
 
     }
-
+    public void startControllerThread() {
+        new Thread(this.carControllerThread).start();
+    }
     public void start() {
         this.stopped = false;
         if(!this.transitionsList.isEmpty()) {
