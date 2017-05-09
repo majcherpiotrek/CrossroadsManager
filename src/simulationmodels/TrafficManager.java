@@ -1,21 +1,23 @@
 package simulationmodels;
 
+import javafx.application.Platform;
 import javafx.geometry.Point2D;
 import javafx.scene.layout.Pane;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * Created by Piotrek on 19.04.2017.
  */
 public class TrafficManager implements Runnable {
 
-    private List<CarModel> allCars;
+    private CopyOnWriteArrayList<CarModel> allCars;
     private List<RoadModel> allRoads;
     private Pane parentPane;
 
-    public TrafficManager(List<CarModel> allCars, List<RoadModel> allRoads, Pane parentPane) {
+    public TrafficManager(CopyOnWriteArrayList<CarModel> allCars, List<RoadModel> allRoads, Pane parentPane) {
         this.allCars = allCars;
         this.allRoads = allRoads;
         this.parentPane = parentPane;
@@ -25,12 +27,14 @@ public class TrafficManager implements Runnable {
     public void run() {
 
         new Thread(()->{
+
             while(true){
 
                 try {
                     //Check collisions more or less every 30 milis
                     Thread.sleep(30);
                     for (CarModel car : this.allCars) {
+
                         for (CarModel secondCar : this.allCars) {
                             if(car == secondCar)
                                 continue;
@@ -39,12 +43,17 @@ public class TrafficManager implements Runnable {
                                     && !secondCar.getStopped()) {
                                 secondCar.stop();
                             }
+
                         }
                     }
                     //TODO Check collisions between the cars
                     int j = 1;
                     for( CarModel car : this.allCars){
-
+                        if (car.getDone()){
+                            this.allCars.remove(car);
+                            Platform.runLater(() -> this.parentPane.getChildren().add(car));
+                            continue;
+                        }
                         //Check collisions with the traffic lights on all the roads
                         for(RoadModel road : this.allRoads){
                             //Check if the car is crossing any of the traffic lights

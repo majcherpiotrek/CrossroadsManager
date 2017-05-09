@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class Controller implements Initializable{
@@ -104,21 +105,21 @@ public class Controller implements Initializable{
         roadModels.add(roadN);
         roadModels.add(roadS);
         roadModels.add(roadW);
-        ArrayList<CarModel> carModels = new ArrayList<>();
+        CopyOnWriteArrayList<CarModel> carModels = new CopyOnWriteArrayList<>();
 
         CarModelGenerator carModelGenerator = new CarModelGenerator(anchorPane,carModels);
-        List<Point3D> roadERoutes = new LinkedList<>();
-        roadERoutes.add(new Point3D(-3*roadE.getRoadView().getRoadLength(),0,40));
-        carModelGenerator.addRoadTraffic(new Point2D(
-                roadE.getRoadView().getLeftUpperCorner().getX()+roadE.getRoadView().getRoadLength(),
-                roadE.getRoadView().getLeftUpperCorner().getY()+roadE.getRoadView().getLaneWidth()/3),
-                4000, roadERoutes, 10, 10);
+//        List<Point3D> roadERoutes = new LinkedList<>();
+//        roadERoutes.add(new Point3D(-3*roadE.getRoadView().getRoadLength(),0,40));
+//        carModelGenerator.addRoadTraffic(new Point2D(
+//                roadE.getRoadView().getLeftUpperCorner().getX()+roadE.getRoadView().getRoadLength(),
+//                roadE.getRoadView().getLeftUpperCorner().getY()+roadE.getRoadView().getLaneWidth()/3),
+//                4000, roadERoutes, 10, 10);
         List<Point3D> roadNRoutes = new LinkedList<>();
         roadNRoutes.add(new Point3D(0,3*roadN.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
                 roadN.getRoadView().getLeftUpperCorner().getX()+roadN.getRoadView().getLaneWidth()/3,
                 roadN.getRoadView().getLeftUpperCorner().getY()),
-                4000,roadNRoutes,10,10);
+                4000,roadNRoutes,roadN.getRoadView().getLaneWidth()/3,roadN.getRoadView().getLaneWidth()/3);
         new Thread(carModelGenerator).start();
 //        CarModel car = new CarModel(
 //                roadN.getRoadView().getLeftUpperCorner().getX()+roadN.getRoadView().getLaneWidth()/3,

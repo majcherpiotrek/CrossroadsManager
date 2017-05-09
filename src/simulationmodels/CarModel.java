@@ -85,6 +85,9 @@ public class CarModel extends Rectangle{
         if(!this.transitionsList.isEmpty()) {
             this.transitionsList.peek().pause();
         }
+        else {
+            this.done = true;
+        }
     }
 
     public Boolean getStopped() {
@@ -92,85 +95,133 @@ public class CarModel extends Rectangle{
     }
 
     public double getBumperX(){
-        switch (this.directionsList.peek()) {
-            case E: {
-                return this.getBoundsInParent().getMaxX()+1.0;
-            }
-            case W: {
-                return this.getBoundsInParent().getMinX() - 1.0;
-            }
-            case N: {
-                return this.getBoundsInParent().getMinX();
-            }
-            case S: {
-                return this.getBoundsInParent().getMinX();
-            }
+        try {
+            switch (this.directionsList.peek()) {
+                case E: {
+                    return this.getBoundsInParent().getMaxX() + 1.0;
+                }
+                case W: {
+                    return this.getBoundsInParent().getMinX() - 1.0;
+                }
+                case N: {
+                    return this.getBoundsInParent().getMinX();
+                }
+                case S: {
+                    return this.getBoundsInParent().getMinX();
+                }
 
+            }
+        }
+        catch (NullPointerException e){
+            return 0;
         }
         return this.getBoundsInParent().getMinX();
     }
 
     public double getBumperY(){
+        try {
+            switch (this.directionsList.peek()) {
+                case E: {
+                    return this.getBoundsInParent().getMinY();
+                }
+                case W: {
+                    return this.getBoundsInParent().getMinY();
+                }
+                case N: {
+                    return this.getBoundsInParent().getMinY() - 1.0;
+                }
+                case S: {
+                    return this.getBoundsInParent().getMaxY() + 1.0;
+                }
 
-        switch (this.directionsList.peek()) {
-            case E: {
-                return this.getBoundsInParent().getMinY();
             }
-            case W: {
-                return this.getBoundsInParent().getMinY();
-            }
-            case N: {
-                return this.getBoundsInParent().getMinY() - 1.0;
-            }
-            case S: {
-                return this.getBoundsInParent().getMaxY() + 1.0;
-            }
-
+        }
+        catch (NullPointerException e){
+            return 0;
         }
         return this.getBoundsInParent().getMinY();
     }
 
     public double getBumberWidth(){
+        try {
+            switch (this.directionsList.peek()) {
+                case E: {
+                    return bumperBuffer;
+                }
+                case W: {
+                    return bumperBuffer;
+                }
+                case N: {
+                    return this.getBoundsInParent().getWidth();
+                }
+                case S: {
+                    return this.getBoundsInParent().getWidth();
+                }
 
-        switch (this.directionsList.peek()) {
-            case E: {
-                return bumperBuffer;
             }
-            case W: {
-                return bumperBuffer;
-            }
-            case N: {
-                return this.getBoundsInParent().getWidth();
-            }
-            case S: {
-                return this.getBoundsInParent().getWidth();
-            }
-
+        }
+        catch (NullPointerException e){
+            return 0;
         }
         return bumperBuffer;
     }
 
     public double getBumperHeight() {
+        try {
+            switch (this.directionsList.peek()) {
+                case E: {
+                    return this.getBoundsInParent().getHeight();
+                }
+                case W: {
+                    return this.getBoundsInParent().getHeight();
+                }
+                case N: {
+                    return bumperBuffer;
+                }
+                case S: {
+                    return bumperBuffer;
+                }
 
-        switch (this.directionsList.peek()) {
-            case E: {
-                return this.getBoundsInParent().getHeight();
             }
-            case W: {
-                return this.getBoundsInParent().getHeight();
-            }
-            case N: {
-                return bumperBuffer;
-            }
-            case S: {
-                return bumperBuffer;
-            }
-
+        }
+        catch (NullPointerException e){
+            return 0;
         }
         return bumperBuffer;
     }
 
     public NWSE getDirection() {
         return this.directionsList.peek();
+    }
+
+    public Boolean getDone() {
+        return done;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CarModel carModel = (CarModel) o;
+
+        if (transitionsList != null ? !transitionsList.equals(carModel.transitionsList) : carModel.transitionsList != null)
+            return false;
+        if (directionsList != null ? !directionsList.equals(carModel.directionsList) : carModel.directionsList != null)
+            return false;
+        if (currentTransition != null ? !currentTransition.equals(carModel.currentTransition) : carModel.currentTransition != null)
+            return false;
+        if (done != null ? !done.equals(carModel.done) : carModel.done != null) return false;
+        return stopped != null ? stopped.equals(carModel.stopped) : carModel.stopped == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = transitionsList != null ? transitionsList.hashCode() : 0;
+        result = 31 * result + (directionsList != null ? directionsList.hashCode() : 0);
+        result = 31 * result + (currentTransition != null ? currentTransition.hashCode() : 0);
+        result = 31 * result + (done != null ? done.hashCode() : 0);
+        result = 31 * result + (stopped != null ? stopped.hashCode() : 0);
+        return result;
     }
 }
