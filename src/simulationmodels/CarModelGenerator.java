@@ -51,11 +51,9 @@ public class CarModelGenerator implements Runnable{
                     lightsViewList.add(roadModel.getTrafficLightsModelEndA().getTrafficLightsView());
                     lightsViewList.add(roadModel.getTrafficLightsModelEndB().getTrafficLightsView());
                 }
-                carModel.setUpCarControllerThread(this.generatedCarsList,lightsViewList);
                 synchronized (this.generatedCarsList) {
                     this.generatedCarsList.add(carModel);
                     Platform.runLater(() -> parent.getChildren().add(carModel));
-                    carModel.startControllerThread();
                     carModel.start();
                 }
                 try {

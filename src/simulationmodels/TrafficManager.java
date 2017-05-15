@@ -96,62 +96,63 @@ public class TrafficManager implements Runnable {
 
     @Override
     public void run() {
-//        System.out.println("Thread manager launched!");
-//        System.out.println("Car controller thread running");
-//        boolean bumped = false;
-//        boolean stoppedAtLights = false;
-//
-//            synchronized (this.allCars){
-//                for(CarModel car : this.allCars)
-//                    for( CarModel carInFront : this.allCars) {
-//                    if(carInFront == car)
-//                        continue;
-//                    //checking collision
-//                    if(carInFront.getBoundsInParent().intersects(
-//                            car.getBumperX(),
-//                            car.getBumperY(),
-//                            car.getBumberWidth(),
-//                            car.getBumperHeight()) &&
-//                            !car.getStopped()) {
-//                        car.stop();
-//                        bumped = true;
-//                    }
-//                    //checking if collision passed
-//                    if(bumped &&
-//                            !carInFront.getBoundsInParent().intersects(
-//                                    car.getBumperX(),
-//                                    car.getBumperY(),
-//                                    car.getBumberWidth(),
-//                                    car.getBumperHeight()) &&
-//                            car.getStopped()) {
-//                        car.start();
-//                        bumped = false;
-//
-//                    }
-//                }
-//                //checking traffic lights
-//                for(TrafficLightsView trafficLightsView : this.trafficLights) {
-//                    System.out.print("sialalalal");
-//                    if(car.getBoundsInParent().intersects(trafficLightsView.getBoundsInParent()) &&
-//                            trafficLightsView.getLight() == TrafficLightsView.Light.RED &&
-//                            !car.getStopped()) {
-//                        car.stop();
-//                        stoppedAtLights = true;
-//                    }
-//
-//                    if(car.getBoundsInParent().intersects(trafficLightsView.getBoundsInParent()) &&
-//                            trafficLightsView.getLight() == TrafficLightsView.Light.GREEN &&
-//                            car.getStopped() && stoppedAtLights) {
-//                        car.start();
-//                        stoppedAtLights = false;
-//                    }
-//                }
-//            }
-//            try {
-//                Thread.sleep(30);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//
+        System.out.println("Thread manager launched!");
+        System.out.println("Car controller thread running");
+        boolean bumped = false;
+        boolean stoppedAtLights = false;
+
+            for(RoadModel roadModel : this.allRoads) {
+                for(CarModel car : this.allCars) {
+                    if(roadModel.getTrafficLightsModelEndA().getTrafficLightsView().getBoundsInParent().intersects(car.getBoundsInParent()) &&
+                            roadModel.getTrafficLightsModelEndA().getLight() == TrafficLightsView.Light.RED &&
+                            !car.getStopped() ||
+                            roadModel.getTrafficLightsModelEndB().getTrafficLightsView().getBoundsInParent().intersects(car.getBoundsInParent()) &&
+                                    roadModel.getTrafficLightsModelEndB().getLight() == TrafficLightsView.Light.RED &&
+                                    !car.getStopped()) {
+                        car.stop();
+                    }
+                }
+
+            }
+            synchronized (this.allCars){
+                for(CarModel car : this.allCars) {
+                    if (car.getDone()) {
+                        this.allCars.remove(car);
+                        continue;
+                    }
+                    for (CarModel carInFront : this.allCars) {
+                        if (carInFront == car)
+                            continue;
+                        //checking collision
+                        if (carInFront.getBoundsInParent().intersects(
+                                car.getBumperX(),
+                                car.getBumperY(),
+                                car.getBumberWidth(),
+                                car.getBumperHeight()) &&
+                                !car.getStopped()) {
+                            car.stop();
+                            bumped = true;
+                        }
+                        //checking if collision passed
+                        if (bumped &&
+                                !carInFront.getBoundsInParent().intersects(
+                                        car.getBumperX(),
+                                        car.getBumperY(),
+                                        car.getBumberWidth(),
+                                        car.getBumperHeight()) &&
+                                car.getStopped()) {
+                            car.start();
+                            bumped = false;
+
+                        }
+                    }
+                }
+            }
+            try {
+                Thread.sleep(30);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
     }
 }
