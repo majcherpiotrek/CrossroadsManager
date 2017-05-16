@@ -95,6 +95,14 @@ public class Controller implements Initializable{
             new Thread(roadS.getTrafficLightsModelEndA()).start();
             Thread.sleep(1000);
             new Thread(roadS.getTrafficLightsModelEndB()).start();
+            Thread.sleep(1000);
+            new Thread(roadE.getTrafficLightsModelEndA()).start();
+            Thread.sleep(1000);
+            new Thread(roadE.getTrafficLightsModelEndB()).start();
+            Thread.sleep(1000);
+            new Thread(roadW.getTrafficLightsModelEndA()).start();
+            Thread.sleep(1000);
+            new Thread(roadW.getTrafficLightsModelEndB()).start();
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -105,78 +113,42 @@ public class Controller implements Initializable{
         roadModels.add(roadN);
         roadModels.add(roadS);
         roadModels.add(roadW);
+
+        /**
+         * Create cars
+         */
         CopyOnWriteArrayList<CarModel> carModels = new CopyOnWriteArrayList<>();
 
         CarModelGenerator carModelGenerator = new CarModelGenerator(anchorPane,carModels,roadModels);
+
         List<Point3D> roadERoutes = new LinkedList<>();
         roadERoutes.add(new Point3D(-3*roadE.getRoadView().getRoadLength(),0,40));
         carModelGenerator.addRoadTraffic(new Point2D(
                 roadE.getRoadView().getLeftUpperCorner().getX()+roadE.getRoadView().getRoadLength(),
                 roadE.getRoadView().getLeftUpperCorner().getY()+roadE.getRoadView().getLaneWidth()/3),
-                2000, roadERoutes, roadE.getRoadView().getLaneWidth()/3, roadE.getRoadView().getLaneWidth()/3);
+                1000, roadERoutes, roadE.getRoadView().getLaneWidth()/3, roadE.getRoadView().getLaneWidth()/3);
         List<Point3D> roadNRoutes = new LinkedList<>();
         roadNRoutes.add(new Point3D(0,3*roadN.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
-                roadN.getRoadView().getLeftUpperCorner().getX(),
+                roadN.getRoadView().getLeftUpperCorner().getX() + roadN.getRoadView().getLaneWidth()/3,
                 roadN.getRoadView().getLeftUpperCorner().getY()),
-                2000,roadNRoutes,roadN.getRoadView().getLaneWidth()/3, roadN.getRoadView().getLaneWidth()/3);
+                1000,roadNRoutes,roadN.getRoadView().getLaneWidth()/3, roadN.getRoadView().getLaneWidth()/3);
         List<Point3D> roadWRoutes = new LinkedList<>();
         roadWRoutes.add(new Point3D(3*roadW.getRoadView().getRoadLength(),0,40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadW.getRoadView().getLeftUpperCorner().getX(),
                         roadW.getRoadView().getLeftUpperCorner().getY() + roadW.getRoadView().getLaneWidth()+roadW.getRoadView().getLaneWidth()/3),
-                2000,roadWRoutes,roadW.getRoadView().getLaneWidth()/3, roadW.getRoadView().getLaneWidth()/3);
+                1000,roadWRoutes,roadW.getRoadView().getLaneWidth()/3, roadW.getRoadView().getLaneWidth()/3);
         List<Point3D> roadSRoutes = new LinkedList<>();
         roadSRoutes.add(new Point3D(0,-3*roadS.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadS.getRoadView().getLeftUpperCorner().getX()+roadS.getRoadView().getLaneWidth()+roadS.getRoadView().getLaneWidth()/3,
                         roadS.getRoadView().getLeftUpperCorner().getY()+roadS.getRoadView().getRoadLength()),
-                2000,roadSRoutes,roadS.getRoadView().getLaneWidth()/3, roadS.getRoadView().getLaneWidth()/3);
+                1000,roadSRoutes,roadS.getRoadView().getLaneWidth()/3, roadS.getRoadView().getLaneWidth()/3);
+
         new Thread(carModelGenerator).start();
-//        CarModel car = new CarModel(
-//                roadN.getRoadView().getLeftUpperCorner().getX()+roadN.getRoadView().getLaneWidth()/3,
-//                roadN.getRoadView().getLeftUpperCorner().getY(),
-//                roadN.getRoadView().getLaneWidth()/3,
-//                roadN.getRoadView().getLaneWidth()/3
-//        );
-//
-//        car.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
-//        car.addTransition(0, -roadN.getRoadView().getRoadLength()*2,40);
-//        car.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
-//        car.addTransition(0, -roadN.getRoadView().getRoadLength()*2,40);
-//        car.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
-//
-//        carModels.add(car);
-//        anchorPane.getChildren().add(car);
-//        car.start();
-//
-//        new Thread(() -> {
-//            while (true){
-//                try {
-//                    CarModel car2 = new CarModel(
-//                            roadN.getRoadView().getLeftUpperCorner().getX()+roadN.getRoadView().getLaneWidth()/3,
-//                            roadN.getRoadView().getLeftUpperCorner().getY(),
-//                            roadN.getRoadView().getLaneWidth()/3,
-//                            roadN.getRoadView().getLaneWidth()/3
-//                    );
-//
-//                    car2.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
-//                    car2.addTransition(0, -roadN.getRoadView().getRoadLength()*2,40);
-//                    car2.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
-//                    car2.addTransition(0, -roadN.getRoadView().getRoadLength()*2,40);
-//                    car2.addTransition(0, roadN.getRoadView().getRoadLength()*2,40);
-//
-//                    carModels.add(car2);
-//                    Platform.runLater(() -> anchorPane.getChildren().add(car2));
-//                    car2.start();
-//                    Thread.sleep(3000);
-//
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }).start();
-        TrafficManager manager = new TrafficManager(carModels, roadModels);
+
+        TrafficManager manager = new TrafficManager(carModels, roadModels,anchorPane);
         new Thread(manager).start();
 
         }

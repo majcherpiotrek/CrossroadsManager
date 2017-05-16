@@ -20,6 +20,8 @@ import java.util.Queue;
  */
 public class CarModel extends Rectangle{
 
+    public enum StopType { running , stoppedOnLights, crashed, stopped }
+    private StopType stopType = StopType.stopped;
     private Queue<Transition> transitionsList;
     private Queue<NWSE> directionsList;
     private Transition currentTransition = null;
@@ -65,33 +67,42 @@ public class CarModel extends Rectangle{
         t.setCycleCount(1);
         t.setOnFinished(e ->{
             //one transition finished
-            System.out.println("finished");
             this.transitionsList.poll();
             this.directionsList.poll();
-            this.start();
+            if (!this.directionsList.isEmpty()) {
+                this.start();
+            }
+            else {
+                this.done = true;
+                System.out.println("Done!");
+            }
+
+
         });
-
         this.transitionsList.add(t);
-
-
     }
 
     public void start() {
         this.stopped = false;
+        this.stopType = StopType.running;
         if(!this.transitionsList.isEmpty()) {
             this.transitionsList.peek().play();
-        }else{
-            this.done = true;
         }
     }
+
     public void stop(){
         this.stopped = true;
         if(!this.transitionsList.isEmpty()) {
             this.transitionsList.peek().pause();
         }
-        else {
-            this.done = true;
-        }
+    }
+
+    public StopType getStopType() {
+        return stopType;
+    }
+
+    public void setStopType(StopType stopType) {
+        this.stopType = stopType;
     }
 
     public Boolean getStopped() {
@@ -102,10 +113,10 @@ public class CarModel extends Rectangle{
         try {
             switch (this.directionsList.peek()) {
                 case E: {
-                    return this.getBoundsInParent().getMaxX() + 1.0;
+                    return this.getBoundsInParent().getMaxX();
                 }
                 case W: {
-                    return this.getBoundsInParent().getMinX() - 1.0;
+                    return this.getBoundsInParent().getMinX() - bumperBuffer;
                 }
                 case N: {
                     return this.getBoundsInParent().getMinX();
@@ -113,13 +124,11 @@ public class CarModel extends Rectangle{
                 case S: {
                     return this.getBoundsInParent().getMinX();
                 }
-
             }
+        } catch (NullPointerException ex) {
+            return  0;
         }
-        catch (NullPointerException e){
-            return 0;
-        }
-        return this.getBoundsInParent().getMinX();
+            return this.getBoundsInParent().getMinX();
     }
 
     public double getBumperY(){
@@ -132,10 +141,10 @@ public class CarModel extends Rectangle{
                     return this.getBoundsInParent().getMinY();
                 }
                 case N: {
-                    return this.getBoundsInParent().getMinY() - 1.0;
+                    return this.getBoundsInParent().getMinY() - bumperBuffer;
                 }
                 case S: {
-                    return this.getBoundsInParent().getMaxY() + 1.0;
+                    return this.getBoundsInParent().getMaxY();
                 }
 
             }
