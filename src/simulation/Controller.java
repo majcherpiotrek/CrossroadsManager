@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 public class Controller implements Initializable{
@@ -104,7 +105,7 @@ public class Controller implements Initializable{
         roadModels.add(roadN);
         roadModels.add(roadS);
         roadModels.add(roadW);
-        ArrayList<CarModel> carModels = new ArrayList<>();
+        CopyOnWriteArrayList<CarModel> carModels = new CopyOnWriteArrayList<>();
 
         CarModelGenerator carModelGenerator = new CarModelGenerator(anchorPane,carModels,roadModels);
         List<Point3D> roadERoutes = new LinkedList<>();

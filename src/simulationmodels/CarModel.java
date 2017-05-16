@@ -89,6 +89,9 @@ public class CarModel extends Rectangle{
         if(!this.transitionsList.isEmpty()) {
             this.transitionsList.peek().pause();
         }
+        else {
+            this.done = true;
+        }
     }
 
     public Boolean getStopped() {
@@ -96,80 +99,97 @@ public class CarModel extends Rectangle{
     }
 
     public double getBumperX(){
-        switch (this.directionsList.peek()) {
-            case E: {
-                return this.getBoundsInParent().getMaxX()+1.0;
-            }
-            case W: {
-                return this.getBoundsInParent().getMinX() - 1.0;
-            }
-            case N: {
-                return this.getBoundsInParent().getMinX();
-            }
-            case S: {
-                return this.getBoundsInParent().getMinX();
-            }
+        try {
+            switch (this.directionsList.peek()) {
+                case E: {
+                    return this.getBoundsInParent().getMaxX() + 1.0;
+                }
+                case W: {
+                    return this.getBoundsInParent().getMinX() - 1.0;
+                }
+                case N: {
+                    return this.getBoundsInParent().getMinX();
+                }
+                case S: {
+                    return this.getBoundsInParent().getMinX();
+                }
 
+            }
+        }
+        catch (NullPointerException e){
+            return 0;
         }
         return this.getBoundsInParent().getMinX();
     }
 
     public double getBumperY(){
+        try {
+            switch (this.directionsList.peek()) {
+                case E: {
+                    return this.getBoundsInParent().getMinY();
+                }
+                case W: {
+                    return this.getBoundsInParent().getMinY();
+                }
+                case N: {
+                    return this.getBoundsInParent().getMinY() - 1.0;
+                }
+                case S: {
+                    return this.getBoundsInParent().getMaxY() + 1.0;
+                }
 
-        switch (this.directionsList.peek()) {
-            case E: {
-                return this.getBoundsInParent().getMinY();
             }
-            case W: {
-                return this.getBoundsInParent().getMinY();
-            }
-            case N: {
-                return this.getBoundsInParent().getMinY() - 1.0;
-            }
-            case S: {
-                return this.getBoundsInParent().getMaxY() + 1.0;
-            }
-
+        }
+        catch (NullPointerException e){
+            return 0;
         }
         return this.getBoundsInParent().getMinY();
     }
 
     public double getBumberWidth(){
+        try {
+            switch (this.directionsList.peek()) {
+                case E: {
+                    return bumperBuffer;
+                }
+                case W: {
+                    return bumperBuffer;
+                }
+                case N: {
+                    return this.getBoundsInParent().getWidth();
+                }
+                case S: {
+                    return this.getBoundsInParent().getWidth();
+                }
 
-        switch (this.directionsList.peek()) {
-            case E: {
-                return bumperBuffer;
             }
-            case W: {
-                return bumperBuffer;
-            }
-            case N: {
-                return this.getBoundsInParent().getWidth();
-            }
-            case S: {
-                return this.getBoundsInParent().getWidth();
-            }
-
+        }
+        catch (NullPointerException e){
+            return 0;
         }
         return bumperBuffer;
     }
 
     public double getBumperHeight() {
+        try {
+            switch (this.directionsList.peek()) {
+                case E: {
+                    return this.getBoundsInParent().getHeight();
+                }
+                case W: {
+                    return this.getBoundsInParent().getHeight();
+                }
+                case N: {
+                    return bumperBuffer;
+                }
+                case S: {
+                    return bumperBuffer;
+                }
 
-        switch (this.directionsList.peek()) {
-            case E: {
-                return this.getBoundsInParent().getHeight();
             }
-            case W: {
-                return this.getBoundsInParent().getHeight();
-            }
-            case N: {
-                return bumperBuffer;
-            }
-            case S: {
-                return bumperBuffer;
-            }
-
+        }
+        catch (NullPointerException e){
+            return 0;
         }
         return bumperBuffer;
     }
