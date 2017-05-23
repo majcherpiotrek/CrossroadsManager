@@ -6,8 +6,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import util.CanvasPane?>
-
-
-<StackPane fx:controller="simulation.Controller"
-           xmlns:fx="http://javafx.com/fxml" alignment="center" fx:id="stackPane">
-</StackPane>
+<GridPane fx:controller="simulation.Controller" xmlns:fx="http://javafx.com/fxml" fx:id="mainPane">
+    <StackPane GridPane.columnIndex="0" GridPane.rowIndex="0" alignment="center" fx:id="stackPane">
+    </StackPane>
+    <GridPane GridPane.columnIndex="1" GridPane.rowIndex="0" fx:id="gridPane"></GridPane>
+</GridPane>

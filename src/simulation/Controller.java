@@ -40,6 +40,13 @@ public class Controller implements Initializable{
 
     private @FXML
     StackPane stackPane;
+
+    private @FXML
+    GridPane mainPane;
+
+    private @FXML
+    GridPane gridPane;
+
     private Thread carModelGeneratorThread;
     private Thread trafficManagerThread;
 
@@ -72,7 +79,6 @@ public class Controller implements Initializable{
         Button button1 = new Button("Play");
         Button button2 = new Button("Stop");
 
-        GridPane gridPane = new GridPane();
         gridPane.setMinSize(400, 200);
         gridPane.setPadding(new Insets(10, 10, 10, 10));
 
@@ -95,9 +101,6 @@ public class Controller implements Initializable{
         gridPane.add(slider2, 1, 5);
         gridPane.add(button1, 0, 6);
         gridPane.add(button2, 1, 6);
-
-        gridPane.setPadding(new Insets(0,0,400,750));
-        stackPane.getChildren().add(gridPane);
 
         /**
          * Prepare background
