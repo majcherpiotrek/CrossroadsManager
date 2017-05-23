@@ -75,6 +75,10 @@ public class Controller implements Initializable{
         TextField textfield2 = new TextField();
         TextField textfield3 = new TextField();
         TextField textfield4 = new TextField();
+        textfield1.setMaxWidth(50);
+        textfield2.setMaxWidth(50);
+        textfield3.setMaxWidth(50);
+        textfield4.setMaxWidth(50);
 
         Button button1 = new Button("Play");
         Button button2 = new Button("Stop");
@@ -89,14 +93,28 @@ public class Controller implements Initializable{
 
         gridPane.add(text1, 0, 0);
         gridPane.add(slider1, 1, 0);
+        gridPane.add(textfield1, 2, 0);
+
         gridPane.add(text2, 0, 1);
         gridPane.add(slider2, 1, 1);
+        gridPane.add(textfield2, 2, 1);
+
         gridPane.add(text3, 0, 2);
         gridPane.add(slider3, 1, 2);
+        gridPane.add(textfield3, 2, 2);
+
+
         gridPane.add(text4, 0, 3);
         gridPane.add(slider4, 1, 3);
+        gridPane.add(textfield4, 2, 3);
+
         gridPane.add(button1, 0, 6);
         gridPane.add(button2, 1, 6);
+
+        slider1.setOnMouseDragged(event -> textfield1.setText(String.valueOf(slider1.getValue())));
+        slider2.setOnMouseDragged(event -> textfield2.setText(String.valueOf(slider2.getValue())));
+        slider3.setOnMouseDragged(event -> textfield3.setText(String.valueOf(slider3.getValue())));
+        slider4.setOnMouseDragged(event -> textfield4.setText(String.valueOf(slider4.getValue())));
 
         /**
          * Prepare background
