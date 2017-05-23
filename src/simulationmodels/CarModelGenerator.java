@@ -28,6 +28,10 @@ public class CarModelGenerator implements Runnable{
         private List<CarModel> generatedCarsList;
         private List<RoadModel> roadsList;
 
+        public void setTimeBetweenCarsMilis(Integer timeBetweenCarsMilis) {
+            this.timeBetweenCarsMilis = timeBetweenCarsMilis;
+        }
+
         public Generator(List<RoadModel> roadsList, List<CarModel> generatedCarsList, Point2D entryPoint, Integer timeBetweenCarsMilis, List<Point3D> carRoute, Pane parent, double carsWidth, double carsHeight) {
             this.generatedCarsList = generatedCarsList;
             this.entryPoint = entryPoint;
@@ -41,7 +45,7 @@ public class CarModelGenerator implements Runnable{
 
         @Override
         public void run() {
-            while (!Thread.interrupted()) {
+            while (true) {
                 CarModel carModel = new CarModel(entryPoint.getX(), entryPoint.getY(), this.carsWidth, this.carsHeight);
                 for(Point3D transition : this.carRoute) {
                     carModel.addTransition(transition.getX(), transition.getY(), transition.getZ());
@@ -59,7 +63,7 @@ public class CarModelGenerator implements Runnable{
                 try {
                     Thread.sleep(this.timeBetweenCarsMilis);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    break;
                 }
             }
         }

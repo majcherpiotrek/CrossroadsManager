@@ -71,6 +71,11 @@ public class Controller implements Initializable{
         Slider slider3 = new Slider(0, 5000, 10);
         Slider slider4 = new Slider(0, 5000, 10);
 
+        TextField textfield1 = new TextField();
+        TextField textfield2 = new TextField();
+        TextField textfield3 = new TextField();
+        TextField textfield4 = new TextField();
+
         Button button1 = new Button("Play");
         Button button2 = new Button("Stop");
 
@@ -201,8 +206,8 @@ public class Controller implements Initializable{
         }
 
     private void stopSimulation() {
-        this.trafficManagerThread.interrupt();
         this.carModelGeneratorThread.interrupt();
+        this.trafficManagerThread.interrupt();
     }
 
     private void runSimulation(AnchorPane anchorPane, ArrayList<RoadModel> roadModels, CopyOnWriteArrayList<CarModel> carModels, CarModelGenerator carModelGenerator) {

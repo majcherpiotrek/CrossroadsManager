@@ -106,16 +106,17 @@ public class TrafficManager implements Runnable {
         boolean bumped = false;
         boolean stoppedAtLights = false;
 
-        while (!Thread.interrupted()) {
+        while (true) {
             try {
                 Thread.sleep(50);
             } catch (InterruptedException e) {
-                e.printStackTrace();
+                break;
             }
             for (CarModel car : this.allCars) {
                 if (car.getDone()) {
                     //Platform.runLater(() -> this.parentPane.getChildren().remove(car));
                     this.allCars.remove(car);
+                    Platform.runLater(() -> parentPane.getChildren().remove(car));
                     System.out.println("Deleting car");
                     continue;
                 }
@@ -179,6 +180,15 @@ public class TrafficManager implements Runnable {
                 }
             }
         }
-
+        synchronized (allCars) {
+            //TODO stop and delete all cars
+            for (CarModel carModel : allCars) {
+                //TODO setDone method or sth
+                carModel.stop();
+                //TODO some cars which are deleted from the list before are not gonna be deleted now ;<
+                int index = parentPane.getChildren().indexOf(carModel);
+                Platform.runLater(() -> parentPane.getChildren().remove(index));
+            }
+        }
     }
 }
