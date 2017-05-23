@@ -61,20 +61,15 @@ public class Controller implements Initializable{
         AnchorPane anchorPane = new AnchorPane();
         stackPane.getChildren().addAll(canvasPane,anchorPane);
 
-        Text text1 = new Text("Generator 1 freq");
-        Text text2 = new Text("Generator 2 freq");
-        Text text3 = new Text("Generator 3 freq");
-        Text text4 = new Text("Generator 4 freq");
-        Text text5 = new Text("Generator 5 freq");
-        Text text6 = new Text("Generator 6 freq");
+        Text text1 = new Text("Road 1 car freq");
+        Text text2 = new Text("Road 2 car freq");
+        Text text3 = new Text("Road 3 car freq");
+        Text text4 = new Text("Road 4 car freq");
 
-        TextField textField1 = new TextField();
-        TextField textField2 = new TextField();
-        TextField textField3 = new TextField();
-        TextField textField4 = new TextField();
-
-        Slider slider1 = new Slider(0, 100, 10);
-        Slider slider2 = new Slider(0, 100, 10);
+        Slider slider1 = new Slider(0, 5000, 10);
+        Slider slider2 = new Slider(0, 5000, 10);
+        Slider slider3 = new Slider(0, 5000, 10);
+        Slider slider4 = new Slider(0, 5000, 10);
 
         Button button1 = new Button("Play");
         Button button2 = new Button("Stop");
@@ -88,17 +83,13 @@ public class Controller implements Initializable{
         gridPane.setAlignment(Pos.CENTER);
 
         gridPane.add(text1, 0, 0);
-        gridPane.add(textField1, 1, 0);
+        gridPane.add(slider1, 1, 0);
         gridPane.add(text2, 0, 1);
-        gridPane.add(textField2, 1, 1);
+        gridPane.add(slider2, 1, 1);
         gridPane.add(text3, 0, 2);
-        gridPane.add(textField3, 1, 2);
+        gridPane.add(slider3, 1, 2);
         gridPane.add(text4, 0, 3);
-        gridPane.add(textField4, 1, 3);
-        gridPane.add(text5, 0, 4);
-        gridPane.add(slider1, 1, 4);
-        gridPane.add(text6, 0, 5);
-        gridPane.add(slider2, 1, 5);
+        gridPane.add(slider4, 1, 3);
         gridPane.add(button1, 0, 6);
         gridPane.add(button2, 1, 6);
 
