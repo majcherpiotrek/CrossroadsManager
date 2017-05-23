@@ -2,17 +2,26 @@ package simulation;
 
 import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
+import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Slider;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.util.Duration;
 import simulationmodels.*;
 import util.CanvasPane;
@@ -31,6 +40,8 @@ public class Controller implements Initializable{
 
     private @FXML
     StackPane stackPane;
+    private Thread carModelGeneratorThread;
+    private Thread trafficManagerThread;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -38,10 +49,55 @@ public class Controller implements Initializable{
         /**
          * Create the Canvas and add it to the window
          */
-        CanvasPane canvasPane = new CanvasPane(800,600);
+        CanvasPane canvasPane = new CanvasPane(800,900);
         Canvas canvas = canvasPane.getCanvas();
         AnchorPane anchorPane = new AnchorPane();
         stackPane.getChildren().addAll(canvasPane,anchorPane);
+
+        Text text1 = new Text("Generator 1 freq");
+        Text text2 = new Text("Generator 2 freq");
+        Text text3 = new Text("Generator 3 freq");
+        Text text4 = new Text("Generator 4 freq");
+        Text text5 = new Text("Generator 5 freq");
+        Text text6 = new Text("Generator 6 freq");
+
+        TextField textField1 = new TextField();
+        TextField textField2 = new TextField();
+        TextField textField3 = new TextField();
+        TextField textField4 = new TextField();
+
+        Slider slider1 = new Slider(0, 100, 10);
+        Slider slider2 = new Slider(0, 100, 10);
+
+        Button button1 = new Button("Play");
+        Button button2 = new Button("Stop");
+
+        GridPane gridPane = new GridPane();
+        gridPane.setMinSize(400, 200);
+        gridPane.setPadding(new Insets(10, 10, 10, 10));
+
+        gridPane.setVgap(5);
+        gridPane.setHgap(5);
+
+        gridPane.setAlignment(Pos.CENTER);
+
+        gridPane.add(text1, 0, 0);
+        gridPane.add(textField1, 1, 0);
+        gridPane.add(text2, 0, 1);
+        gridPane.add(textField2, 1, 1);
+        gridPane.add(text3, 0, 2);
+        gridPane.add(textField3, 1, 2);
+        gridPane.add(text4, 0, 3);
+        gridPane.add(textField4, 1, 3);
+        gridPane.add(text5, 0, 4);
+        gridPane.add(slider1, 1, 4);
+        gridPane.add(text6, 0, 5);
+        gridPane.add(slider2, 1, 5);
+        gridPane.add(button1, 0, 6);
+        gridPane.add(button2, 1, 6);
+
+        gridPane.setPadding(new Insets(0,0,400,750));
+        stackPane.getChildren().add(gridPane);
 
         /**
          * Prepare background
@@ -146,10 +202,21 @@ public class Controller implements Initializable{
                         roadS.getRoadView().getLeftUpperCorner().getY()+roadS.getRoadView().getRoadLength()),
                 1000,roadSRoutes,roadS.getRoadView().getLaneWidth()/3, roadS.getRoadView().getLaneWidth()/3);
 
-        new Thread(carModelGenerator).start();
+        button1.setOnAction(event -> runSimulation(anchorPane, roadModels, carModels, carModelGenerator));
+        button2.setOnAction(event -> this.stopSimulation());
+        }
+
+    private void stopSimulation() {
+        this.trafficManagerThread.interrupt();
+        this.carModelGeneratorThread.interrupt();
+    }
+
+    private void runSimulation(AnchorPane anchorPane, ArrayList<RoadModel> roadModels, CopyOnWriteArrayList<CarModel> carModels, CarModelGenerator carModelGenerator) {
+       this.carModelGeneratorThread = new Thread(carModelGenerator);
+       this.carModelGeneratorThread.start();
 
         TrafficManager manager = new TrafficManager(carModels, roadModels,anchorPane);
-        new Thread(manager).start();
-
-        }
+        this.trafficManagerThread =  new Thread(manager);
+        this.trafficManagerThread.start();
+    }
 }

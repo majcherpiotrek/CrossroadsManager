@@ -6,6 +6,8 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import util.CanvasPane?>
+
+
 <StackPane fx:controller="simulation.Controller"
            xmlns:fx="http://javafx.com/fxml" alignment="center" fx:id="stackPane">
 </StackPane>
