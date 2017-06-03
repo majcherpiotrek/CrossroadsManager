@@ -68,6 +68,7 @@ public class CarModelGenerator implements Runnable{
             }
         }
     }
+
     List<CarModel> generatedCarsList;
     private Pane parent;
     private List<Generator> carGenerators;
@@ -102,5 +103,9 @@ public class CarModelGenerator implements Runnable{
         while (!executor.isTerminated()){
         }
         System.out.println("The car model factory finished working!");
+    }
+
+    public void setTimeBetweenCars(int generatorId, int value) {
+        this.carGenerators.get(generatorId).setTimeBetweenCarsMilis(value);
     }
 }

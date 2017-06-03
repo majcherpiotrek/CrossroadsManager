@@ -66,10 +66,10 @@ public class Controller implements Initializable{
         Text text3 = new Text("Road 3 car freq");
         Text text4 = new Text("Road 4 car freq");
 
-        Slider slider1 = new Slider(0, 5000, 10);
-        Slider slider2 = new Slider(0, 5000, 10);
-        Slider slider3 = new Slider(0, 5000, 10);
-        Slider slider4 = new Slider(0, 5000, 10);
+        Slider slider1 = new Slider(100, 5000, 150);
+        Slider slider2 = new Slider(100, 5000, 150);
+        Slider slider3 = new Slider(100, 5000, 150);
+        Slider slider4 = new Slider(100, 5000, 150);
 
         TextField textfield1 = new TextField();
         TextField textfield2 = new TextField();
@@ -110,11 +110,6 @@ public class Controller implements Initializable{
 
         gridPane.add(button1, 0, 6);
         gridPane.add(button2, 1, 6);
-
-        slider1.setOnMouseDragged(event -> textfield1.setText(String.valueOf(slider1.getValue())));
-        slider2.setOnMouseDragged(event -> textfield2.setText(String.valueOf(slider2.getValue())));
-        slider3.setOnMouseDragged(event -> textfield3.setText(String.valueOf(slider3.getValue())));
-        slider4.setOnMouseDragged(event -> textfield4.setText(String.valueOf(slider4.getValue())));
 
         /**
          * Prepare background
@@ -221,7 +216,25 @@ public class Controller implements Initializable{
 
         button1.setOnAction(event -> runSimulation(anchorPane, roadModels, carModels, carModelGenerator));
         button2.setOnAction(event -> this.stopSimulation());
-        }
+
+        slider1.valueProperty().addListener((observable, oldValue, newValue) -> {
+            carModelGenerator.setTimeBetweenCars(0, newValue.intValue());
+            textfield1.setText(String.valueOf(slider1.getValue()));
+        });
+        slider2.valueProperty().addListener((observable, oldValue, newValue) -> {
+            carModelGenerator.setTimeBetweenCars(1, newValue.intValue());
+            textfield2.setText(String.valueOf(slider2.getValue()));
+        });
+        slider3.valueProperty().addListener((observable, oldValue, newValue) -> {
+            carModelGenerator.setTimeBetweenCars(2, newValue.intValue());
+            textfield3.setText(String.valueOf(slider3.getValue()));
+        });
+        slider4.valueProperty().addListener((observable, oldValue, newValue) -> {
+            carModelGenerator.setTimeBetweenCars(3, newValue.intValue());
+            textfield4.setText(String.valueOf(slider4.getValue()));
+        });
+
+    }
 
     private void stopSimulation() {
         this.carModelGeneratorThread.interrupt();

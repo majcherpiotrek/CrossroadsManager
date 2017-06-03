@@ -116,7 +116,7 @@ public class TrafficManager implements Runnable {
                 if (car.getDone()) {
                     //Platform.runLater(() -> this.parentPane.getChildren().remove(car));
                     this.allCars.remove(car);
-                    Platform.runLater(() -> parentPane.getChildren().remove(car));
+                    //Platform.runLater(() -> parentPane.getChildren().remove(car));
                     System.out.println("Deleting car");
                     continue;
                 }
