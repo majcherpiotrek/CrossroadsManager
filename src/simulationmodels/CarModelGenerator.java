@@ -52,6 +52,7 @@ public class CarModelGenerator implements Runnable{
                 }
                 List<TrafficLightsView> lightsViewList = new LinkedList<>();
                 for(RoadModel roadModel : this.roadsList) {
+
                     lightsViewList.add(roadModel.getTrafficLightsModelEndA().getTrafficLightsView());
                     lightsViewList.add(roadModel.getTrafficLightsModelEndB().getTrafficLightsView());
                 }

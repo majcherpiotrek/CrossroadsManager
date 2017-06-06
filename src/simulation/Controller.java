@@ -121,9 +121,13 @@ public class Controller implements Initializable{
         /**
          * Draw the crossroads
          */
-        CrossroadsView crossroadsView = new CrossroadsView(new Point2D(380.0,280.0),
-                2,40.0,260,360,250,350);
+        CrossroadsView crossroadsView = new CrossroadsView(new Point2D(380.0/2,280.0/2),
+                2,40.0/2,260/2,360/2,250/2,350/2);
         SimpleShapePainter.drawShape(crossroadsView,context);
+
+        CrossroadsView crossroadsView2 = new CrossroadsView(new Point2D(585,280.0/2),
+                2,40.0/2,260/2,360/2,250/2,350/2);
+        SimpleShapePainter.drawShape(crossroadsView2,context);
         /**
          * Add traffic lights to the crossroads
          */
@@ -143,6 +147,22 @@ public class Controller implements Initializable{
         roadW.addLightsEndA(5000,3000);
         roadW.addLightsEndB(5000,3000);
 
+        RoadModel roadN2 = new RoadModel(crossroadsView2.getRoadNORTH());
+        roadN2.addLightsEndA(5000,3000);
+        roadN2.addLightsEndB(5000,3000);
+
+        RoadModel roadE2 = new RoadModel(crossroadsView2.getRoadEAST());
+        roadE2.addLightsEndA(5000,3000);
+        roadE2.addLightsEndB(5000,3000);
+
+        RoadModel roadS2 = new RoadModel(crossroadsView2.getRoadSOUTH());
+        roadS2.addLightsEndA(5000,3000);
+        roadS2.addLightsEndB(5000,3000);
+
+        RoadModel roadW2 = new RoadModel(crossroadsView2.getRoadWEST());
+        roadW2.addLightsEndA(5000,3000);
+        roadW2.addLightsEndB(5000,3000);
+
         canvasPane.getChildren().add(roadN.getTrafficLightsModelEndA().getTrafficLightsView());
         canvasPane.getChildren().add(roadN.getTrafficLightsModelEndB().getTrafficLightsView());
 
@@ -154,6 +174,18 @@ public class Controller implements Initializable{
 
         canvasPane.getChildren().add(roadW.getTrafficLightsModelEndA().getTrafficLightsView());
         canvasPane.getChildren().add(roadW.getTrafficLightsModelEndB().getTrafficLightsView());
+
+        canvasPane.getChildren().add(roadN2.getTrafficLightsModelEndA().getTrafficLightsView());
+        canvasPane.getChildren().add(roadN2.getTrafficLightsModelEndB().getTrafficLightsView());
+
+        canvasPane.getChildren().add(roadE2.getTrafficLightsModelEndA().getTrafficLightsView());
+        canvasPane.getChildren().add(roadE2.getTrafficLightsModelEndB().getTrafficLightsView());
+
+        canvasPane.getChildren().add(roadS2.getTrafficLightsModelEndA().getTrafficLightsView());
+        canvasPane.getChildren().add(roadS2.getTrafficLightsModelEndB().getTrafficLightsView());
+
+        canvasPane.getChildren().add(roadW2.getTrafficLightsModelEndA().getTrafficLightsView());
+        canvasPane.getChildren().add(roadW2.getTrafficLightsModelEndB().getTrafficLightsView());
 
         try {
             new Thread(roadN.getTrafficLightsModelEndA()).start();
@@ -172,6 +204,22 @@ public class Controller implements Initializable{
             Thread.sleep(1000);
             new Thread(roadW.getTrafficLightsModelEndB()).start();
 
+            new Thread(roadN2.getTrafficLightsModelEndA()).start();
+            Thread.sleep(1000);
+            new Thread(roadN2.getTrafficLightsModelEndB()).start();
+            Thread.sleep(1000);
+            new Thread(roadS2.getTrafficLightsModelEndA()).start();
+            Thread.sleep(1000);
+            new Thread(roadS2.getTrafficLightsModelEndB()).start();
+            Thread.sleep(1000);
+            new Thread(roadE2.getTrafficLightsModelEndA()).start();
+            Thread.sleep(1000);
+            new Thread(roadE2.getTrafficLightsModelEndB()).start();
+            Thread.sleep(1000);
+            new Thread(roadW2.getTrafficLightsModelEndA()).start();
+            Thread.sleep(1000);
+            new Thread(roadW2.getTrafficLightsModelEndB()).start();
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -181,6 +229,11 @@ public class Controller implements Initializable{
         roadModels.add(roadN);
         roadModels.add(roadS);
         roadModels.add(roadW);
+
+        roadModels.add(roadE2);
+        roadModels.add(roadN2);
+        roadModels.add(roadS2);
+        roadModels.add(roadW2);
 
         /**
          * Create cars
@@ -213,6 +266,31 @@ public class Controller implements Initializable{
                         roadS.getRoadView().getLeftUpperCorner().getX()+roadS.getRoadView().getLaneWidth()+roadS.getRoadView().getLaneWidth()/3,
                         roadS.getRoadView().getLeftUpperCorner().getY()+roadS.getRoadView().getRoadLength()),
                 1000,roadSRoutes,roadS.getRoadView().getLaneWidth()/3, roadS.getRoadView().getLaneWidth()/3);
+
+        List<Point3D> roadERoutes2 = new LinkedList<>();
+        roadERoutes2.add(new Point3D(-3*roadE2.getRoadView().getRoadLength(),0,40));
+        carModelGenerator.addRoadTraffic(new Point2D(
+                        roadE2.getRoadView().getLeftUpperCorner().getX()+roadE2.getRoadView().getRoadLength(),
+                        roadE2.getRoadView().getLeftUpperCorner().getY()+roadE2.getRoadView().getLaneWidth()/3),
+                5000, roadERoutes2, roadE2.getRoadView().getLaneWidth()/3, roadE2.getRoadView().getLaneWidth()/3);
+        List<Point3D> roadNRoutes2 = new LinkedList<>();
+        roadNRoutes2.add(new Point3D(0,3*roadN2.getRoadView().getRoadLength(),40));
+        carModelGenerator.addRoadTraffic(new Point2D(
+                        roadN2.getRoadView().getLeftUpperCorner().getX() + roadN2.getRoadView().getLaneWidth()/3,
+                        roadN2.getRoadView().getLeftUpperCorner().getY()),
+                5000,roadNRoutes2,roadN2.getRoadView().getLaneWidth()/3, roadN2.getRoadView().getLaneWidth()/3);
+        List<Point3D> roadWRoutes2 = new LinkedList<>();
+        roadWRoutes2.add(new Point3D(3*roadW2.getRoadView().getRoadLength(),0,40));
+        carModelGenerator.addRoadTraffic(new Point2D(
+                        roadW2.getRoadView().getLeftUpperCorner().getX(),
+                        roadW2.getRoadView().getLeftUpperCorner().getY() + roadW2.getRoadView().getLaneWidth()+roadW2.getRoadView().getLaneWidth()/3),
+                5000,roadWRoutes2,roadW2.getRoadView().getLaneWidth()/3, roadW2.getRoadView().getLaneWidth()/3);
+        List<Point3D> roadSRoutes2 = new LinkedList<>();
+        roadSRoutes2.add(new Point3D(0,-3*roadS2.getRoadView().getRoadLength(),40));
+        carModelGenerator.addRoadTraffic(new Point2D(
+                        roadS2.getRoadView().getLeftUpperCorner().getX()+roadS2.getRoadView().getLaneWidth()+roadS2.getRoadView().getLaneWidth()/3,
+                        roadS2.getRoadView().getLeftUpperCorner().getY()+roadS2.getRoadView().getRoadLength()),
+                5000,roadSRoutes2,roadS2.getRoadView().getLaneWidth()/3, roadS2.getRoadView().getLaneWidth()/3);
 
         button1.setOnAction(event -> runSimulation(anchorPane, roadModels, carModels, carModelGenerator));
         button2.setOnAction(event -> this.stopSimulation());
