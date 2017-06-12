@@ -50,12 +50,7 @@ public class CarModelGenerator implements Runnable{
                 for(Point3D transition : this.carRoute) {
                     carModel.addTransition(transition.getX(), transition.getY(), transition.getZ());
                 }
-                List<TrafficLightsView> lightsViewList = new LinkedList<>();
-                for(RoadModel roadModel : this.roadsList) {
 
-                    lightsViewList.add(roadModel.getTrafficLightsModelEndA().getTrafficLightsView());
-                    lightsViewList.add(roadModel.getTrafficLightsModelEndB().getTrafficLightsView());
-                }
                 synchronized (this.generatedCarsList) {
                     this.generatedCarsList.add(carModel);
                     Platform.runLater(() -> parent.getChildren().add(carModel));
