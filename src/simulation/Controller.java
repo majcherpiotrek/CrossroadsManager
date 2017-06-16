@@ -134,24 +134,28 @@ public class Controller implements Initializable{
 
         RoadModel roadE = new RoadModel(crossroadsView.getRoadEAST());
         roadE.addLightsEndA(5000,3000);
+        roadE.getTrafficLightsModelEndA().setOffset(3000);
 
         RoadModel roadS = new RoadModel(crossroadsView.getRoadSOUTH());
         roadS.addLightsEndA(5000,3000);
 
         RoadModel roadW = new RoadModel(crossroadsView.getRoadWEST());
         roadW.addLightsEndB(5000,3000);
+        roadW.getTrafficLightsModelEndB().setOffset(3000);
 
         RoadModel roadN2 = new RoadModel(crossroadsView2.getRoadNORTH());
         roadN2.addLightsEndB(5000,3000);
 
         RoadModel roadE2 = new RoadModel(crossroadsView2.getRoadEAST());
         roadE2.addLightsEndA(5000,3000);
+        roadE2.getTrafficLightsModelEndA().setOffset(3000);
 
         RoadModel roadS2 = new RoadModel(crossroadsView2.getRoadSOUTH());
         roadS2.addLightsEndA(5000,3000);
 
         RoadModel roadW2 = new RoadModel(crossroadsView2.getRoadWEST());
         roadW2.addLightsEndB(5000,3000);
+        roadW2.getTrafficLightsModelEndB().setOffset(3000);
 
         canvasPane.getChildren().add(roadN.getTrafficLightsModelEndB().getTrafficLightsView());
 
