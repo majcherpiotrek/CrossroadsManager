@@ -198,7 +198,7 @@ public class Controller implements Initializable{
                 roadN.getRoadView().getLeftUpperCorner().getY()),
                 1000,roadNRoutes,roadN.getRoadView().getLaneWidth()/3, roadN.getRoadView().getLaneWidth()/3);
         List<Point3D> roadWRoutes = new LinkedList<>();
-        roadWRoutes.add(new Point3D(3*roadW.getRoadView().getRoadLength(),0,40));
+        roadWRoutes.add(new Point3D(5*roadW.getRoadView().getRoadLength(),0,40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadW.getRoadView().getLeftUpperCorner().getX(),
                         roadW.getRoadView().getLeftUpperCorner().getY() + roadW.getRoadView().getLaneWidth()+roadW.getRoadView().getLaneWidth()/3),
@@ -211,7 +211,7 @@ public class Controller implements Initializable{
                 1000,roadSRoutes,roadS.getRoadView().getLaneWidth()/3, roadS.getRoadView().getLaneWidth()/3);
 
         List<Point3D> roadERoutes2 = new LinkedList<>();
-        roadERoutes2.add(new Point3D(-3*roadE2.getRoadView().getRoadLength(),0,40));
+        roadERoutes2.add(new Point3D(-5*roadE2.getRoadView().getRoadLength(),0,40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadE2.getRoadView().getLeftUpperCorner().getX()+roadE2.getRoadView().getRoadLength(),
                         roadE2.getRoadView().getLeftUpperCorner().getY()+roadE2.getRoadView().getLaneWidth()/3),
