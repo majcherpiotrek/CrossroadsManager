@@ -1,5 +1,6 @@
 package simulationmodels;
 
+import javafx.application.Platform;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 
@@ -31,7 +32,7 @@ public class TrafficLightsView extends Rectangle{
 
     public void changeLight(Light light){
         this.light = light;
-        this.setFill((this.light == Light.GREEN) ? Color.GREEN : Color.RED);
+        Platform.runLater(() -> this.setFill((this.light == Light.GREEN) ? Color.GREEN : Color.RED));
     }
 
 }

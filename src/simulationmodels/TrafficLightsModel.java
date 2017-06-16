@@ -49,7 +49,6 @@ public class TrafficLightsModel implements Runnable{
     @Override
     public void run() {
         try{
-            synchronized (this) {
                 trafficLightsView.changeLight(TrafficLightsView.Light.RED);
                 Thread.sleep(this.offset);
                 while (!Thread.interrupted()) {
@@ -58,7 +57,6 @@ public class TrafficLightsModel implements Runnable{
                     trafficLightsView.changeLight(TrafficLightsView.Light.RED);
                     Thread.sleep(redLightDuration);
                 }
-            }
         }catch (InterruptedException ex){
             System.out.println("Traffic lights modelling stopped.");
         }

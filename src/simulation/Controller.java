@@ -266,7 +266,7 @@ public class Controller implements Initializable{
     private void runSimulation(AnchorPane anchorPane, ArrayList<RoadModel> roadModels, CopyOnWriteArrayList<CarModel> carModels, CarModelGenerator carModelGenerator) {
        this.carModelGeneratorThread = new Thread(carModelGenerator);
        this.carModelGeneratorThread.start();
-        
+
         TrafficManager manager = new TrafficManager(carModels, roadModels,anchorPane);
         Timer timer = new Timer();
         timer.scheduleAtFixedRate(manager, 0, 40);
