@@ -40,13 +40,12 @@ public class Controller implements Initializable{
     StackPane stackPane;
 
     private @FXML
-    GridPane mainPane;
-
-    private @FXML
     GridPane gridPane;
 
-    private Thread carModelGeneratorThread;
-    private Thread trafficManagerThread;
+    private AnchorPane anchorPane;
+    private TrafficManager manager;
+    private CarModelGenerator carModelGenerator;
+    private TrafficLightsController lightsController;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -56,7 +55,7 @@ public class Controller implements Initializable{
          */
         CanvasPane canvasPane = new CanvasPane(800,900);
         Canvas canvas = canvasPane.getCanvas();
-        AnchorPane anchorPane = new AnchorPane();
+        anchorPane = new AnchorPane();
         stackPane.getChildren().addAll(canvasPane,anchorPane);
 
         Text text1 = new Text("Road 1 car freq");
@@ -189,7 +188,7 @@ public class Controller implements Initializable{
          */
         CopyOnWriteArrayList<CarModel> carModels = new CopyOnWriteArrayList<>();
 
-        CarModelGenerator carModelGenerator = new CarModelGenerator(anchorPane,carModels,roadModels);
+        carModelGenerator = new CarModelGenerator(anchorPane,carModels);
 
         List<Point3D> roadNRoutes = new LinkedList<>();
         roadNRoutes.add(new Point3D(0,3*roadN.getRoadView().getRoadLength(),40));
@@ -229,7 +228,17 @@ public class Controller implements Initializable{
                         roadS2.getRoadView().getLeftUpperCorner().getY()+roadS2.getRoadView().getRoadLength()),
                 5000,roadSRoutes2,roadS2.getRoadView().getLaneWidth()/3, roadS2.getRoadView().getLaneWidth()/3);
 
-        button1.setOnAction(event -> runSimulation(anchorPane, roadModels, carModels, carModelGenerator));
+        List<TrafficLightsModel> lightsModels = new ArrayList<>();
+        lightsModels.add(roadN.getTrafficLightsModelEndB());
+        lightsModels.add(roadS.getTrafficLightsModelEndA());
+        lightsModels.add(roadE.getTrafficLightsModelEndA());
+        lightsModels.add(roadW.getTrafficLightsModelEndB());
+        lightsModels.add(roadN2.getTrafficLightsModelEndB());
+        lightsModels.add(roadS2.getTrafficLightsModelEndA());
+        lightsModels.add(roadE2.getTrafficLightsModelEndA());
+        lightsModels.add(roadW2.getTrafficLightsModelEndB());
+
+        button1.setOnAction(event -> runSimulation(roadModels, carModels, lightsModels));
         button2.setOnAction(event -> this.stopSimulation());
 
         slider1.valueProperty().addListener((observable, oldValue, newValue) -> {
@@ -248,31 +257,29 @@ public class Controller implements Initializable{
             carModelGenerator.setTimeBetweenCars(3, newValue.intValue());
             textfield4.setText(String.valueOf(slider4.getValue()));
         });
-
-        List<TrafficLightsModel> lightsModels = new ArrayList<>();
-        lightsModels.add(roadN.getTrafficLightsModelEndB());
-        lightsModels.add(roadS.getTrafficLightsModelEndA());
-        lightsModels.add(roadE.getTrafficLightsModelEndA());
-        lightsModels.add(roadW.getTrafficLightsModelEndB());
-        lightsModels.add(roadN2.getTrafficLightsModelEndB());
-        lightsModels.add(roadS2.getTrafficLightsModelEndA());
-        lightsModels.add(roadE2.getTrafficLightsModelEndA());
-        lightsModels.add(roadW2.getTrafficLightsModelEndB());
-
-        TrafficLightsController lightsController = new TrafficLightsController(lightsModels);
-        lightsController.startLights();
     }
 
     private void stopSimulation() {
-        this.carModelGeneratorThread.interrupt();
+        if (manager != null) {
+            manager.stopManager();
+        }
+
+        if (carModelGenerator != null) {
+            carModelGenerator.stopGenerator();
+        }
+
+        if (lightsController != null) {
+            lightsController.stopLights();
+        }
+
+        Platform.runLater(() -> anchorPane.getChildren().clear());
     }
 
-    private void runSimulation(AnchorPane anchorPane, ArrayList<RoadModel> roadModels, CopyOnWriteArrayList<CarModel> carModels, CarModelGenerator carModelGenerator) {
-       this.carModelGeneratorThread = new Thread(carModelGenerator);
-       this.carModelGeneratorThread.start();
-
-        TrafficManager manager = new TrafficManager(carModels, roadModels,anchorPane);
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(manager, 0, 40);
+    private void runSimulation(ArrayList<RoadModel> roadModels, CopyOnWriteArrayList<CarModel> carModels, List<TrafficLightsModel> lightsModels) {
+        lightsController = new TrafficLightsController(lightsModels);
+        lightsController.startLights();
+        carModelGenerator.startGenerator();
+        manager = new TrafficManager(carModels, roadModels, anchorPane);
+        manager.startManager();
     }
 }

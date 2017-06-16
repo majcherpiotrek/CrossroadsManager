@@ -3,17 +3,16 @@ package simulationmodels;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
+import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 import util.NWSE;
 
-import java.util.ArrayDeque;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Created by Piotrek on 16.04.2017.
@@ -74,7 +73,7 @@ public class CarModel extends Rectangle{
             }
             else {
                 this.done = true;
-                System.out.println("Done!");
+                Platform.runLater(() -> this.setFill(Color.TRANSPARENT));
             }
 
 
@@ -226,11 +225,6 @@ public class CarModel extends Rectangle{
 
     @Override
     public int hashCode() {
-        int result = transitionsList != null ? transitionsList.hashCode() : 0;
-        result = 31 * result + (directionsList != null ? directionsList.hashCode() : 0);
-        result = 31 * result + (currentTransition != null ? currentTransition.hashCode() : 0);
-        result = 31 * result + (done != null ? done.hashCode() : 0);
-        result = 31 * result + (stopped != null ? stopped.hashCode() : 0);
-        return result;
+        return super.hashCode();
     }
 }

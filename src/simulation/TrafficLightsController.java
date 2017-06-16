@@ -34,6 +34,15 @@ public class TrafficLightsController {
     }
 
     public void stopLights() {
-        executorService.shutdown();
+        Runnable stopTask = () -> executorService.shutdown();
+        Thread t = new Thread(stopTask);
+        System.out.println("Stopping the traffic lights controller...\n");
+        t.start();
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println("Traffic lights controller stopped!\n");
     }
 }
