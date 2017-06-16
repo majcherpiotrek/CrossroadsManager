@@ -7,6 +7,7 @@ import javafx.scene.layout.Pane;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -14,7 +15,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * Created by Piotrek on 19.04.2017.
  */
-public class TrafficManager implements Runnable {
+public class TrafficManager extends TimerTask {
 
     private CopyOnWriteArrayList<CarModel> allCars;
     private List<RoadModel> allRoads;
@@ -28,17 +29,9 @@ public class TrafficManager implements Runnable {
 
     @Override
     public void run() {
-        System.out.println("Thread manager launched!");
-        System.out.println("Car controller thread running");
         boolean bumped = false;
         boolean stoppedAtLights = false;
 
-        while (true) {
-            try {
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                break;
-            }
             for (CarModel car : this.allCars) {
                 if (car.getDone()) {
                     //Platform.runLater(() -> this.parentPane.getChildren().remove(car));
@@ -106,7 +99,9 @@ public class TrafficManager implements Runnable {
                     }
                 }
             }
-        }
+    }
+
+    public void deleteCars() {
         synchronized (allCars) {
             //TODO stop and delete all cars
             for (CarModel carModel : allCars) {

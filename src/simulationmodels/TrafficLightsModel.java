@@ -9,11 +9,13 @@ public class TrafficLightsModel implements Runnable{
     private TrafficLightsView trafficLightsView;
     private int redLightDuration;
     private int greenLightDuration;
+    private int offset;
 
     public TrafficLightsModel(TrafficLightsView trafficLightsView, int redLightDuration, int greenLightDuration) {
         this.trafficLightsView = trafficLightsView;
         this.redLightDuration = redLightDuration;
         this.greenLightDuration = greenLightDuration;
+        this.offset = 0;
     }
 
     public TrafficLightsView getTrafficLightsView() {
@@ -40,12 +42,16 @@ public class TrafficLightsModel implements Runnable{
         return this.trafficLightsView.getLight();
     }
 
+    public void setOffset(int offsetTime) {
+        this.offset = offsetTime;
+    }
+
     @Override
     public void run() {
         try{
             synchronized (this) {
                 trafficLightsView.changeLight(TrafficLightsView.Light.RED);
-
+                Thread.sleep(this.offset);
                 while (!Thread.interrupted()) {
                     trafficLightsView.changeLight(TrafficLightsView.Light.GREEN);
                     Thread.sleep(greenLightDuration);
