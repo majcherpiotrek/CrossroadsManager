@@ -98,8 +98,7 @@ public class TrafficManager {
                     if (car.getDone()) {
                         allCars.remove(car);
                         Platform.runLater(() -> {
-                            int index = parentPane.getChildren().indexOf(car);
-                            parentPane.getChildren().remove(index);
+                            parentPane.getChildren().remove(car);
                         });
                     }
                 }
@@ -110,14 +109,9 @@ public class TrafficManager {
     }
 
     public void stopManager() {
-        Runnable stopTask = () -> executorService.shutdown();
-        Thread t = new Thread(stopTask);
         System.out.println("Stopping the traffic manager...\n");
-        t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        if (!executorService.isTerminated()) {
+            executorService.shutdown();
         }
         System.out.println("Traffic manager stopped\n");
     }

@@ -1,16 +1,14 @@
 package simulation;
 
-import javafx.animation.TranslateTransition;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Point2D;
 import javafx.geometry.Point3D;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
@@ -20,19 +18,18 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import simulationmodels.*;
 import util.CanvasPane;
 import util.SimpleShapePainter;
 
-
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ResourceBundle;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.ThreadPoolExecutor;
 
 
 public class Controller implements Initializable{
@@ -59,24 +56,27 @@ public class Controller implements Initializable{
         anchorPane = new AnchorPane();
         stackPane.getChildren().addAll(canvasPane,anchorPane);
 
-        Text text1 = new Text("Road 1 car freq");
-        Text text2 = new Text("Road 2 car freq");
-        Text text3 = new Text("Road 3 car freq");
-        Text text4 = new Text("Road 4 car freq");
+        Text textW = new Text("Road west car freq");
+        Text textN = new Text("Road north car freq");
+        Text textS = new Text("Road south car freq");
+        Text textE = new Text("Road east car freq");
 
-        Slider slider1 = new Slider(100, 5000, 150);
-        Slider slider2 = new Slider(100, 5000, 150);
-        Slider slider3 = new Slider(100, 5000, 150);
-        Slider slider4 = new Slider(100, 5000, 150);
+        /**
+         * Car frequency sliders - range from 0.1 car/second to 10 cars/second, default - 1 car/second
+         */
+        Slider sliderW = new Slider(0.1, 2, 0.1);
+        Slider sliderN = new Slider(0.1, 2, 0.1);
+        Slider sliderS = new Slider(0.1, 2, 0.1);
+        Slider sliderE = new Slider(0.1, 2, 0.1);
 
-        TextField textfield1 = new TextField();
-        TextField textfield2 = new TextField();
-        TextField textfield3 = new TextField();
-        TextField textfield4 = new TextField();
-        textfield1.setMaxWidth(50);
-        textfield2.setMaxWidth(50);
-        textfield3.setMaxWidth(50);
-        textfield4.setMaxWidth(50);
+        TextField textfieldW = new TextField();
+        TextField textfieldN = new TextField();
+        TextField textfieldS = new TextField();
+        TextField textfieldE = new TextField();
+        textfieldW.setMaxWidth(50);
+        textfieldN.setMaxWidth(50);
+        textfieldS.setMaxWidth(50);
+        textfieldE.setMaxWidth(50);
 
         Button button1 = new Button("Play");
         Button button2 = new Button("Stop");
@@ -89,22 +89,22 @@ public class Controller implements Initializable{
 
         gridPane.setAlignment(Pos.CENTER);
 
-        gridPane.add(text1, 0, 0);
-        gridPane.add(slider1, 1, 0);
-        gridPane.add(textfield1, 2, 0);
+        gridPane.add(textW, 0, 0);
+        gridPane.add(sliderW, 1, 0);
+        gridPane.add(textfieldW, 2, 0);
 
-        gridPane.add(text2, 0, 1);
-        gridPane.add(slider2, 1, 1);
-        gridPane.add(textfield2, 2, 1);
+        gridPane.add(textN, 0, 1);
+        gridPane.add(sliderN, 1, 1);
+        gridPane.add(textfieldN, 2, 1);
 
-        gridPane.add(text3, 0, 2);
-        gridPane.add(slider3, 1, 2);
-        gridPane.add(textfield3, 2, 2);
+        gridPane.add(textS, 0, 2);
+        gridPane.add(sliderS, 1, 2);
+        gridPane.add(textfieldS, 2, 2);
 
 
-        gridPane.add(text4, 0, 3);
-        gridPane.add(slider4, 1, 3);
-        gridPane.add(textfield4, 2, 3);
+        gridPane.add(textE, 0, 3);
+        gridPane.add(sliderE, 1, 3);
+        gridPane.add(textfieldE, 2, 3);
 
         gridPane.add(button1, 0, 6);
         gridPane.add(button2, 1, 6);
@@ -191,44 +191,95 @@ public class Controller implements Initializable{
 
         carModelGenerator = new CarModelGenerator(anchorPane,carModels);
 
+        /**
+         * Traffic coming from the north west road
+         */
         List<Point3D> roadNRoutes = new LinkedList<>();
         roadNRoutes.add(new Point3D(0,3*roadN.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
                 roadN.getRoadView().getLeftUpperCorner().getX() + roadN.getRoadView().getLaneWidth()/3,
                 roadN.getRoadView().getLeftUpperCorner().getY()),
-                1000,roadNRoutes,roadN.getRoadView().getLaneWidth()/3, roadN.getRoadView().getLaneWidth()/3);
+                (int)(1000/sliderN.getValue()),roadNRoutes,roadN.getRoadView().getLaneWidth()/3, roadN.getRoadView().getLaneWidth()/3);
+        /**
+         * Traffic coming from the west road
+         */
         List<Point3D> roadWRoutes = new LinkedList<>();
         roadWRoutes.add(new Point3D(5*roadW.getRoadView().getRoadLength(),0,40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadW.getRoadView().getLeftUpperCorner().getX(),
                         roadW.getRoadView().getLeftUpperCorner().getY() + roadW.getRoadView().getLaneWidth()+roadW.getRoadView().getLaneWidth()/3),
-                1000,roadWRoutes,roadW.getRoadView().getLaneWidth()/3, roadW.getRoadView().getLaneWidth()/3);
+                (int)(1000/sliderW.getValue()),roadWRoutes,roadW.getRoadView().getLaneWidth()/3, roadW.getRoadView().getLaneWidth()/3);
+        /**
+         * Traffic coming from the south west road
+         */
         List<Point3D> roadSRoutes = new LinkedList<>();
         roadSRoutes.add(new Point3D(0,-3*roadS.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadS.getRoadView().getLeftUpperCorner().getX()+roadS.getRoadView().getLaneWidth()+roadS.getRoadView().getLaneWidth()/3,
                         roadS.getRoadView().getLeftUpperCorner().getY()+roadS.getRoadView().getRoadLength()),
-                1000,roadSRoutes,roadS.getRoadView().getLaneWidth()/3, roadS.getRoadView().getLaneWidth()/3);
+                (int)(1000/sliderS.getValue()),roadSRoutes,roadS.getRoadView().getLaneWidth()/3, roadS.getRoadView().getLaneWidth()/3);
 
+        /**
+         * Traffic coming from the east road
+         */
         List<Point3D> roadERoutes2 = new LinkedList<>();
         roadERoutes2.add(new Point3D(-5*roadE2.getRoadView().getRoadLength(),0,40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadE2.getRoadView().getLeftUpperCorner().getX()+roadE2.getRoadView().getRoadLength(),
                         roadE2.getRoadView().getLeftUpperCorner().getY()+roadE2.getRoadView().getLaneWidth()/3),
-                5000, roadERoutes2, roadE2.getRoadView().getLaneWidth()/3, roadE2.getRoadView().getLaneWidth()/3);
+                (int)(1000/sliderE.getValue()), roadERoutes2, roadE2.getRoadView().getLaneWidth()/3, roadE2.getRoadView().getLaneWidth()/3);
+        /**
+         * Traffic coming from the north east road
+         */
         List<Point3D> roadNRoutes2 = new LinkedList<>();
         roadNRoutes2.add(new Point3D(0,3*roadN2.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadN2.getRoadView().getLeftUpperCorner().getX() + roadN2.getRoadView().getLaneWidth()/3,
                         roadN2.getRoadView().getLeftUpperCorner().getY()),
-                5000,roadNRoutes2,roadN2.getRoadView().getLaneWidth()/3, roadN2.getRoadView().getLaneWidth()/3);
+                (int)(1000/sliderN.getValue()),roadNRoutes2,roadN2.getRoadView().getLaneWidth()/3, roadN2.getRoadView().getLaneWidth()/3);
+        /**
+         * Traffic coming from the south east road
+         */
         List<Point3D> roadSRoutes2 = new LinkedList<>();
         roadSRoutes2.add(new Point3D(0,-3*roadS2.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadS2.getRoadView().getLeftUpperCorner().getX()+roadS2.getRoadView().getLaneWidth()+roadS2.getRoadView().getLaneWidth()/3,
                         roadS2.getRoadView().getLeftUpperCorner().getY()+roadS2.getRoadView().getRoadLength()),
-                5000,roadSRoutes2,roadS2.getRoadView().getLaneWidth()/3, roadS2.getRoadView().getLaneWidth()/3);
+                (int)(1000/sliderS.getValue()),roadSRoutes2,roadS2.getRoadView().getLaneWidth()/3, roadS2.getRoadView().getLaneWidth()/3);
 
+        sliderN.valueChangingProperty().addListener((observable, wasChanging, isNowChanging) -> {
+            if (!isNowChanging) {
+                int t = (int)(1000/sliderN.getValue());
+                carModelGenerator.setTimeBetweenCars(0, t);
+                carModelGenerator.setTimeBetweenCars(4, t);
+                textfieldN.setText(String.valueOf(sliderN.getValue()));
+            }
+        });
+
+        sliderS.valueChangingProperty().addListener((observable, wasChanging, isNowChanging) -> {
+            if (!isNowChanging) {
+                int t = (int)(1000/sliderS.getValue());
+                carModelGenerator.setTimeBetweenCars(2, t);
+                carModelGenerator.setTimeBetweenCars(5, t);
+                textfieldS.setText(String.valueOf(sliderS.getValue()));
+            }
+        });
+
+        sliderW.valueChangingProperty().addListener((observable, wasChanging, isNowChanging) -> {
+            if (!isNowChanging) {
+                int t = (int)(1000/sliderW.getValue());
+                carModelGenerator.setTimeBetweenCars(1, t);
+                textfieldW.setText(String.valueOf(sliderW.getValue()));
+            }
+        });
+
+        sliderE.valueChangingProperty().addListener((observable, wasChanging, isNowChanging) -> {
+            if (!isNowChanging) {
+                int t = (int)(1000/sliderE.getValue());
+                carModelGenerator.setTimeBetweenCars(3, t);
+                textfieldE.setText(String.valueOf(sliderE.getValue()));
+            }
+        });
         List<TrafficLightsModel> lightsModels = new ArrayList<>();
         lightsModels.add(roadN.getTrafficLightsModelEndB());
         lightsModels.add(roadS.getTrafficLightsModelEndA());
@@ -242,22 +293,6 @@ public class Controller implements Initializable{
         button1.setOnAction(event -> runSimulation(roadModels, carModels, lightsModels));
         button2.setOnAction(event -> this.stopSimulation());
 
-        slider1.valueProperty().addListener((observable, oldValue, newValue) -> {
-            carModelGenerator.setTimeBetweenCars(0, newValue.intValue());
-            textfield1.setText(String.valueOf(slider1.getValue()));
-        });
-        slider2.valueProperty().addListener((observable, oldValue, newValue) -> {
-            carModelGenerator.setTimeBetweenCars(1, newValue.intValue());
-            textfield2.setText(String.valueOf(slider2.getValue()));
-        });
-        slider3.valueProperty().addListener((observable, oldValue, newValue) -> {
-            carModelGenerator.setTimeBetweenCars(2, newValue.intValue());
-            textfield3.setText(String.valueOf(slider3.getValue()));
-        });
-        slider4.valueProperty().addListener((observable, oldValue, newValue) -> {
-            carModelGenerator.setTimeBetweenCars(3, newValue.intValue());
-            textfield4.setText(String.valueOf(slider4.getValue()));
-        });
     }
 
     private void stopSimulation() {
@@ -266,7 +301,13 @@ public class Controller implements Initializable{
         }
 
         if (carModelGenerator != null) {
-            carModelGenerator.stopGenerator();
+            try {
+                carModelGenerator.stopGenerator();
+            } catch (InterruptedException e) {
+                System.err.println("Couldn't stop the car generator!");
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
 
         if (lightsController != null) {

@@ -34,10 +34,6 @@ public class CarModelGenerator{
             this.timeBetweenCarsMilis = timeBetweenCarsMilis;
         }
 
-        Integer getTimeBetweenCarsMilis() {
-            return timeBetweenCarsMilis;
-        }
-
         Generator(List<CarModel> generatedCarsList, Point2D entryPoint, Integer timeBetweenCarsMilis, List<Point3D> carRoute, Pane parent, double carsWidth, double carsHeight) {
             this.generatedCarsList = generatedCarsList;
             this.entryPoint = entryPoint;
@@ -50,15 +46,22 @@ public class CarModelGenerator{
 
         @Override
         public void run() {
-                CarModel carModel = new CarModel(entryPoint.getX(), entryPoint.getY(), this.carsWidth, this.carsHeight);
-                for(Point3D transition : this.carRoute) {
-                    carModel.addTransition(transition.getX(), transition.getY(), transition.getZ());
-                }
+                while (!Thread.interrupted()) {
+                    CarModel carModel = new CarModel(entryPoint.getX(), entryPoint.getY(), this.carsWidth, this.carsHeight);
+                    for (Point3D transition : this.carRoute) {
+                        carModel.addTransition(transition.getX(), transition.getY(), transition.getZ());
+                    }
 
-                synchronized (this.generatedCarsList) {
-                    this.generatedCarsList.add(carModel);
-                    Platform.runLater(() -> parent.getChildren().add(carModel));
-                    carModel.start();
+                    synchronized (this.generatedCarsList) {
+                        this.generatedCarsList.add(carModel);
+                        Platform.runLater(() -> parent.getChildren().add(carModel));
+                        carModel.start();
+                    }
+                    try {
+                        Thread.sleep(timeBetweenCarsMilis);
+                    } catch (InterruptedException e) {
+                        break;
+                    }
                 }
         }
     }
@@ -66,7 +69,8 @@ public class CarModelGenerator{
     private List<CarModel> generatedCarsList;
     private Pane parent;
     private List<Generator> carGenerators;
-    private ScheduledExecutorService executorService;
+    private ExecutorService executorService;
+    private boolean isRunning = false;
 
     public CarModelGenerator(Pane parent, List<CarModel> generatedCarsList) {
         this.generatedCarsList = generatedCarsList;
@@ -80,23 +84,18 @@ public class CarModelGenerator{
 
     public void startGenerator() {
         if (!carGenerators.isEmpty()) {
-            executorService = Executors.newScheduledThreadPool(carGenerators.size());
+            executorService = Executors.newFixedThreadPool(carGenerators.size());
             for (Generator g : carGenerators) {
-                executorService.scheduleAtFixedRate(g, 0, g.getTimeBetweenCarsMilis(), TimeUnit.MILLISECONDS);
+                executorService.execute(g);
             }
         }
+        isRunning = true;
     }
 
-    public void stopGenerator() {
-        Runnable stopTask = () -> executorService.shutdown();
-        Thread t = new Thread(stopTask);
+    public void stopGenerator() throws InterruptedException {
         System.out.println("Stopping the car model generator...\n");
-        t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        executorService.shutdownNow();
+        executorService.awaitTermination(5, TimeUnit.SECONDS);
         System.out.println("Car model generator stopped!\n");
     }
 
