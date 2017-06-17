@@ -14,46 +14,38 @@ public class RoadModel {
         this.roadView = roadView;
         }
 
-    public void addLightsEndA(int redLightDuration, int greenLightDuration){
+    public void addLightsEndA(){
         if(roadView.getOrientation() == RoadView.Orientation.HORIZONTAL){
             this.trafficLightsModelEndA = new TrafficLightsModel(
                     new TrafficLightsView(
                             roadView.getLeftUpperCorner().getX(),
                             roadView.getLeftUpperCorner().getY(),
-                            roadView.getLaneWidth()/3,roadView.getLaneWidth()),
-                    redLightDuration,
-                    greenLightDuration);
+                            roadView.getLaneWidth()/3,roadView.getLaneWidth()));
         }else{
             this.trafficLightsModelEndA = new TrafficLightsModel(
                     new TrafficLightsView(
                             roadView.getLeftUpperCorner().getX()+roadView.getLaneWidth(),
                             roadView.getLeftUpperCorner().getY(),
                             roadView.getLaneWidth(),
-                            roadView.getLaneWidth()/3),
-                    redLightDuration,
-                    greenLightDuration);
+                            roadView.getLaneWidth()/3));
         }
     }
 
-    public void addLightsEndB(int redLightDuration, int greenLightDuration){
+    public void addLightsEndB(){
         if(roadView.getOrientation() == RoadView.Orientation.HORIZONTAL){
             this.trafficLightsModelEndB = new TrafficLightsModel(
                     new TrafficLightsView(
                             roadView.getLeftUpperCorner().getX()+roadView.getRoadLength()-roadView.getLaneWidth()/3,
                             roadView.getLeftUpperCorner().getY()+roadView.getLaneWidth(),
                             roadView.getLaneWidth()/3,roadView.getLaneWidth()
-                            ),
-                    redLightDuration,
-                    greenLightDuration);
+                            ));
         } else {
             this.trafficLightsModelEndB = new TrafficLightsModel(
                     new TrafficLightsView(
                             roadView.getLeftUpperCorner().getX(),
                             roadView.getLeftUpperCorner().getY()+roadView.getRoadLength()-roadView.getLaneWidth()/3,
                             roadView.getLaneWidth(), roadView.getLaneWidth()/3
-                    ),
-                    redLightDuration,
-                    greenLightDuration);
+                    ));
         }
     }
     public RoadView getRoadView() {
