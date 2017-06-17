@@ -10,11 +10,12 @@ public class TrafficLightsModel implements Runnable{
     private int redLightDuration;
     private int greenLightDuration;
     private int offset;
+    private int ttl;
 
-    public TrafficLightsModel(TrafficLightsView trafficLightsView, int redLightDuration, int greenLightDuration) {
+    public TrafficLightsModel(TrafficLightsView trafficLightsView) {
         this.trafficLightsView = trafficLightsView;
-        this.redLightDuration = redLightDuration;
-        this.greenLightDuration = greenLightDuration;
+        this.redLightDuration = 0;
+        this.greenLightDuration = 0;
         this.offset = 0;
     }
 

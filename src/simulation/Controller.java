@@ -17,7 +17,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import simulationmodels.*;
 import util.CanvasPane;
@@ -72,6 +71,8 @@ public class Controller implements Initializable{
     private RoadModel roadNE;
     private RoadModel roadEE;
     private RoadModel roadSE;
+
+    private final int MAIN_ROAD_SPEED = 40;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -203,7 +204,7 @@ public class Controller implements Initializable{
          * Traffic coming from the north west road
          */
         List<Point3D> roadNWRoutes = new LinkedList<>();
-        roadNWRoutes.add(new Point3D(0,3*roadNW.getRoadView().getRoadLength(),40));
+        roadNWRoutes.add(new Point3D(0,3*roadNW.getRoadView().getRoadLength(),MAIN_ROAD_SPEED));
         carModelGenerator.addRoadTraffic(new Point2D(
                 roadNW.getRoadView().getLeftUpperCorner().getX() + roadNW.getRoadView().getLaneWidth()/3,
                 roadNW.getRoadView().getLeftUpperCorner().getY()),
@@ -212,7 +213,7 @@ public class Controller implements Initializable{
          * Traffic coming from the west road
          */
         List<Point3D> roadWRoutes = new LinkedList<>();
-        roadWRoutes.add(new Point3D(5*roadWW.getRoadView().getRoadLength(),0,40));
+        roadWRoutes.add(new Point3D(5*roadWW.getRoadView().getRoadLength(),0,MAIN_ROAD_SPEED));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadWW.getRoadView().getLeftUpperCorner().getX(),
                         roadWW.getRoadView().getLeftUpperCorner().getY() + roadWW.getRoadView().getLaneWidth()+roadWW.getRoadView().getLaneWidth()/3),
@@ -221,7 +222,7 @@ public class Controller implements Initializable{
          * Traffic coming from the south west road
          */
         List<Point3D> roadSWRoutes = new LinkedList<>();
-        roadSWRoutes.add(new Point3D(0,-3*roadSW.getRoadView().getRoadLength(),40));
+        roadSWRoutes.add(new Point3D(0,-3*roadSW.getRoadView().getRoadLength(),MAIN_ROAD_SPEED));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadSW.getRoadView().getLeftUpperCorner().getX()+roadSW.getRoadView().getLaneWidth()+roadSW.getRoadView().getLaneWidth()/3,
                         roadSW.getRoadView().getLeftUpperCorner().getY()+roadSW.getRoadView().getRoadLength()),
@@ -231,7 +232,7 @@ public class Controller implements Initializable{
          * Traffic coming from the east road
          */
         List<Point3D> roadERoutes = new LinkedList<>();
-        roadERoutes.add(new Point3D(-5*roadEE.getRoadView().getRoadLength(),0,40));
+        roadERoutes.add(new Point3D(-5*roadEE.getRoadView().getRoadLength(),0,MAIN_ROAD_SPEED));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadEE.getRoadView().getLeftUpperCorner().getX()+roadEE.getRoadView().getRoadLength(),
                         roadEE.getRoadView().getLeftUpperCorner().getY()+roadEE.getRoadView().getLaneWidth()/3),
@@ -240,7 +241,7 @@ public class Controller implements Initializable{
          * Traffic coming from the north east road
          */
         List<Point3D> roadNERoutes = new LinkedList<>();
-        roadNERoutes.add(new Point3D(0,3*roadNE.getRoadView().getRoadLength(),40));
+        roadNERoutes.add(new Point3D(0,3*roadNE.getRoadView().getRoadLength(),MAIN_ROAD_SPEED));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadNE.getRoadView().getLeftUpperCorner().getX() + roadNE.getRoadView().getLaneWidth()/3,
                         roadNE.getRoadView().getLeftUpperCorner().getY()),
@@ -249,7 +250,7 @@ public class Controller implements Initializable{
          * Traffic coming from the south east road
          */
         List<Point3D> roadSERoutes = new LinkedList<>();
-        roadSERoutes.add(new Point3D(0,-3*roadSE.getRoadView().getRoadLength(),40));
+        roadSERoutes.add(new Point3D(0,-3*roadSE.getRoadView().getRoadLength(),MAIN_ROAD_SPEED));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadSE.getRoadView().getLeftUpperCorner().getX()+roadSE.getRoadView().getLaneWidth()+roadSE.getRoadView().getLaneWidth()/3,
                         roadSE.getRoadView().getLeftUpperCorner().getY()+roadSE.getRoadView().getRoadLength()),
@@ -258,32 +259,15 @@ public class Controller implements Initializable{
 
     private void setUpRoadModelsAndTrafficLights(CanvasPane canvasPane) {
         roadNW = new RoadModel(crossroadsViewWest.getRoadNORTH());
-        roadNW.addLightsEndB(5000,3000);
-
         roadEW = new RoadModel(crossroadsViewWest.getRoadEAST());
-        roadEW.addLightsEndA(5000,3000);
-        roadEW.getTrafficLightsModelEndA().setOffset(3000);
-
         roadSW = new RoadModel(crossroadsViewWest.getRoadSOUTH());
-        roadSW.addLightsEndA(5000,3000);
-
         roadWW = new RoadModel(crossroadsViewWest.getRoadWEST());
-        roadWW.addLightsEndB(5000,3000);
-        roadWW.getTrafficLightsModelEndB().setOffset(3000);
-
         roadNE = new RoadModel(crossroadsViewEast.getRoadNORTH());
-        roadNE.addLightsEndB(5000,3000);
-
         roadEE = new RoadModel(crossroadsViewEast.getRoadEAST());
-        roadEE.addLightsEndA(5000,3000);
-        roadEE.getTrafficLightsModelEndA().setOffset(3000);
-
         roadSE = new RoadModel(crossroadsViewEast.getRoadSOUTH());
-        roadSE.addLightsEndA(5000,3000);
-
         roadWE = new RoadModel(crossroadsViewEast.getRoadWEST());
-        roadWE.addLightsEndB(5000,3000);
-        roadWE.getTrafficLightsModelEndB().setOffset(3000);
+
+        addTrafficLightsToRoads();
 
         canvasPane.getChildren().add(roadNW.getTrafficLightsModelEndB().getTrafficLightsView());
 
@@ -300,6 +284,82 @@ public class Controller implements Initializable{
         canvasPane.getChildren().add(roadSE.getTrafficLightsModelEndA().getTrafficLightsView());
 
         canvasPane.getChildren().add(roadWE.getTrafficLightsModelEndB().getTrafficLightsView());
+    }
+
+    private void addTrafficLightsToRoads() {
+        roadNW.addLightsEndB();
+        roadEW.addLightsEndA();
+        roadSW.addLightsEndA();
+        roadWW.addLightsEndB();
+        roadNE.addLightsEndB();
+        roadEE.addLightsEndA();
+        roadSE.addLightsEndA();
+        roadWE.addLightsEndB();
+        setTrafficLightsDuration();
+    }
+
+    private void setTrafficLightsDuration() {
+        final int MAX_QUEUE_LENGTH = 1;
+        final int freqW = (int)sliderW.getValue();
+        final int freqNW = (int)sliderNW.getValue();
+        final int freqSW = (int)sliderSW.getValue();
+        final int freqNE = (int)sliderNE.getValue();
+        final int freqSE = (int)sliderSE.getValue();
+        final int freqE = (int)sliderE.getValue();
+
+        // the times in which the queue reaches the maximum length
+        int queueCreationTimeW = 60000/freqW * MAX_QUEUE_LENGTH;
+        int queueCreationTimeNW = 60000/freqNW * MAX_QUEUE_LENGTH;
+        int queueCreationTimeSW = 60000/freqSW * MAX_QUEUE_LENGTH;
+        int queueCreationTimeNE = 60000/freqNE * MAX_QUEUE_LENGTH;
+        int queueCreationTimeSE = 60000/freqSE * MAX_QUEUE_LENGTH;
+        int queueCreationTimeE = 60000/freqE * MAX_QUEUE_LENGTH;
+
+        //Count the distance between crossroads to set the offset between lights to create a green line
+        double distBetweenCrossroads = Math.abs(crossroadsViewWest.getLeftUpperCorner().getX() - crossroadsViewEast.getLeftUpperCorner().getX() - 2.0);
+        int offsetBetweenCrossroads = (int)(1000 * distBetweenCrossroads / MAIN_ROAD_SPEED);
+
+        //Count the time necessary to leave the crossroads
+        double crossroadsWidth = crossroadsViewWest.getCrossroadsWidth();
+        int timeToLeaveCrossroads = (int)(1000 * crossroadsWidth / MAIN_ROAD_SPEED);
+
+        int verticalRoadRedDurationCrossroadsWest = Math.min(queueCreationTimeNW, queueCreationTimeSW);
+        int verticalRoadRedDurationCrossroadsEast = Math.min(queueCreationTimeNE, queueCreationTimeSE);
+        int horizontalRoadRedDuration = Math.min(queueCreationTimeW, queueCreationTimeE);
+
+        int cycleDuration = horizontalRoadRedDuration + Math.max(verticalRoadRedDurationCrossroadsEast, verticalRoadRedDurationCrossroadsWest) + 2*timeToLeaveCrossroads;
+
+        if (verticalRoadRedDurationCrossroadsWest >= verticalRoadRedDurationCrossroadsEast) {
+            //Horizontal road west crossroads
+            roadWW.getTrafficLightsModelEndB().setRedLightDuration(horizontalRoadRedDuration + 2*timeToLeaveCrossroads);
+            roadWW.getTrafficLightsModelEndB().setGreenLightDuration(verticalRoadRedDurationCrossroadsWest);
+            roadEW.getTrafficLightsModelEndA().setRedLightDuration(horizontalRoadRedDuration + 2*timeToLeaveCrossroads);
+            roadEW.getTrafficLightsModelEndA().setGreenLightDuration(verticalRoadRedDurationCrossroadsWest);
+
+            // Vertical road west crossroads
+            roadNW.getTrafficLightsModelEndB().setOffset(verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+            roadNW.getTrafficLightsModelEndB().setRedLightDuration(verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+            roadNW.getTrafficLightsModelEndB().setGreenLightDuration(horizontalRoadRedDuration);
+            roadSW.getTrafficLightsModelEndA().setOffset(verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+            roadSW.getTrafficLightsModelEndA().setRedLightDuration(verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+            roadSW.getTrafficLightsModelEndA().setGreenLightDuration(horizontalRoadRedDuration);
+
+            //Horizontal road east crossroads
+            roadWE.getTrafficLightsModelEndB().setOffset(offsetBetweenCrossroads);
+            roadWE.getTrafficLightsModelEndB().setRedLightDuration(horizontalRoadRedDuration + 2*timeToLeaveCrossroads);
+            roadWE.getTrafficLightsModelEndB().setGreenLightDuration(verticalRoadRedDurationCrossroadsWest);
+            roadEE.getTrafficLightsModelEndA().setOffset(offsetBetweenCrossroads);
+            roadEE.getTrafficLightsModelEndA().setRedLightDuration(horizontalRoadRedDuration + 2*timeToLeaveCrossroads);
+            roadEE.getTrafficLightsModelEndA().setGreenLightDuration(verticalRoadRedDurationCrossroadsWest);
+
+            // Vertical road east crossroads
+            roadNE.getTrafficLightsModelEndB().setOffset(offsetBetweenCrossroads + verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+            roadNE.getTrafficLightsModelEndB().setRedLightDuration(verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+            roadNE.getTrafficLightsModelEndB().setGreenLightDuration(horizontalRoadRedDuration);
+            roadSE.getTrafficLightsModelEndA().setOffset(offsetBetweenCrossroads + verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+            roadSE.getTrafficLightsModelEndA().setRedLightDuration(verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+            roadSE.getTrafficLightsModelEndA().setGreenLightDuration(horizontalRoadRedDuration);
+        }
     }
 
     private void drawCrossroads(GraphicsContext context) {

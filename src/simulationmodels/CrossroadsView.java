@@ -103,6 +103,10 @@ public class CrossroadsView implements StraightLinesShapeInterface{
         return leftUpperCorner;
     }
 
+    public double getCrossroadsWidth() {
+        return roadNORTH.getLaneWidth() * roadNORTH.getTotalLanesNum();
+    }
+
     @Override
     public List<StraightLine> getLines() {
         List<StraightLine> list = new ArrayList<>();
