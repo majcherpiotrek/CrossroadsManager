@@ -22,6 +22,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import simulationmodels.*;
 import util.CanvasPane;
@@ -281,5 +282,13 @@ public class Controller implements Initializable{
         carModelGenerator.startGenerator();
         manager = new TrafficManager(carModels, roadModels, anchorPane);
         manager.startManager();
+    }
+
+    public void setUpOnCloseRequest(Stage stage) {
+        stage.setOnCloseRequest(event -> {
+            stopSimulation();
+            stage.close();
+            System.exit(0);
+        });
     }
 }
