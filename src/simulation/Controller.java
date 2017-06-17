@@ -10,6 +10,7 @@ import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
@@ -43,19 +44,19 @@ public class Controller implements Initializable{
     private CarModelGenerator carModelGenerator;
     private TrafficLightsController lightsController;
 
+    private TextField textFieldW;
+    private TextField textFieldNW;
+    private TextField textFieldSW;
+    private TextField textFieldNE;
+    private TextField textFieldSE;
+    private TextField textFieldE;
+
     private Slider sliderW;
     private Slider sliderNW;
     private Slider sliderNE;
     private Slider sliderSW;
     private Slider sliderSE;
     private Slider sliderE;
-
-    private TextField textfieldW;
-    private TextField textfieldNW;
-    private TextField textfieldNE;
-    private TextField textfieldSW;
-    private TextField textfieldSE;
-    private TextField textfieldE;
 
     private Button buttonPlay;
     private Button buttonStop;
@@ -150,35 +151,49 @@ public class Controller implements Initializable{
     private void setUpSlidersListeners() {
         sliderNW.valueChangingProperty().addListener((observable, wasChanging, isNowChanging) -> {
             if (!isNowChanging) {
-                int t = (int)(1000/ sliderNW.getValue());
+                int t = (int)(60000/ sliderNW.getValue());
                 carModelGenerator.setTimeBetweenCars(0, t);
-                carModelGenerator.setTimeBetweenCars(4, t);
-                textfieldNW.setText(String.valueOf(sliderNW.getValue()));
+                textFieldNW.setText(Integer.toString((int)sliderNW.getValue()));
             }
         });
 
         sliderSW.valueChangingProperty().addListener((observable, wasChanging, isNowChanging) -> {
             if (!isNowChanging) {
-                int t = (int)(1000/ sliderSW.getValue());
+                int t = (int)(60000/ sliderSW.getValue());
                 carModelGenerator.setTimeBetweenCars(2, t);
+                textFieldSW.setText(Integer.toString((int)sliderSW.getValue()));
+            }
+        });
+
+        sliderNE.valueChangingProperty().addListener((observable, wasChanging, isNowChanging) -> {
+            if (!isNowChanging) {
+                int t = (int)(60000/ sliderNE.getValue());
+                carModelGenerator.setTimeBetweenCars(4, t);
+                textFieldNE.setText(Integer.toString((int)sliderNE.getValue()));
+            }
+        });
+
+        sliderSE.valueChangingProperty().addListener((observable, wasChanging, isNowChanging) -> {
+            if (!isNowChanging) {
+                int t = (int)(60000/ sliderSE.getValue());
                 carModelGenerator.setTimeBetweenCars(5, t);
-                textfieldSW.setText(String.valueOf(sliderSW.getValue()));
+                textFieldSE.setText(Integer.toString((int)sliderSE.getValue()));
             }
         });
 
         sliderW.valueChangingProperty().addListener((observable, wasChanging, isNowChanging) -> {
             if (!isNowChanging) {
-                int t = (int)(1000/sliderW.getValue());
+                int t = (int)(60000/sliderW.getValue());
                 carModelGenerator.setTimeBetweenCars(1, t);
-                textfieldW.setText(String.valueOf(sliderW.getValue()));
+                textFieldW.setText(Integer.toString((int)sliderW.getValue()));
             }
         });
 
         sliderE.valueChangingProperty().addListener((observable, wasChanging, isNowChanging) -> {
             if (!isNowChanging) {
-                int t = (int)(1000/sliderE.getValue());
+                int t = (int)(60000/sliderE.getValue());
                 carModelGenerator.setTimeBetweenCars(3, t);
-                textfieldE.setText(String.valueOf(sliderE.getValue()));
+                textFieldE.setText(Integer.toString((int)sliderE.getValue()));
             }
         });
     }
@@ -187,12 +202,12 @@ public class Controller implements Initializable{
         /**
          * Traffic coming from the north west road
          */
-        List<Point3D> roadNRoutes = new LinkedList<>();
-        roadNRoutes.add(new Point3D(0,3*roadNW.getRoadView().getRoadLength(),40));
+        List<Point3D> roadNWRoutes = new LinkedList<>();
+        roadNWRoutes.add(new Point3D(0,3*roadNW.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
                 roadNW.getRoadView().getLeftUpperCorner().getX() + roadNW.getRoadView().getLaneWidth()/3,
                 roadNW.getRoadView().getLeftUpperCorner().getY()),
-                (int)(1000/ sliderNW.getValue()),roadNRoutes,roadNW.getRoadView().getLaneWidth()/3, roadNW.getRoadView().getLaneWidth()/3);
+                (int)(60000/ sliderNW.getValue()),roadNWRoutes,roadNW.getRoadView().getLaneWidth()/3, roadNW.getRoadView().getLaneWidth()/3);
         /**
          * Traffic coming from the west road
          */
@@ -201,44 +216,44 @@ public class Controller implements Initializable{
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadWW.getRoadView().getLeftUpperCorner().getX(),
                         roadWW.getRoadView().getLeftUpperCorner().getY() + roadWW.getRoadView().getLaneWidth()+roadWW.getRoadView().getLaneWidth()/3),
-                (int)(1000/sliderW.getValue()),roadWRoutes,roadWW.getRoadView().getLaneWidth()/3, roadWW.getRoadView().getLaneWidth()/3);
+                (int)(60000/sliderW.getValue()),roadWRoutes,roadWW.getRoadView().getLaneWidth()/3, roadWW.getRoadView().getLaneWidth()/3);
         /**
          * Traffic coming from the south west road
          */
-        List<Point3D> roadSRoutes = new LinkedList<>();
-        roadSRoutes.add(new Point3D(0,-3*roadSW.getRoadView().getRoadLength(),40));
+        List<Point3D> roadSWRoutes = new LinkedList<>();
+        roadSWRoutes.add(new Point3D(0,-3*roadSW.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadSW.getRoadView().getLeftUpperCorner().getX()+roadSW.getRoadView().getLaneWidth()+roadSW.getRoadView().getLaneWidth()/3,
                         roadSW.getRoadView().getLeftUpperCorner().getY()+roadSW.getRoadView().getRoadLength()),
-                (int)(1000/ sliderSW.getValue()),roadSRoutes,roadSW.getRoadView().getLaneWidth()/3, roadSW.getRoadView().getLaneWidth()/3);
+                (int)(60000/ sliderSW.getValue()),roadSWRoutes,roadSW.getRoadView().getLaneWidth()/3, roadSW.getRoadView().getLaneWidth()/3);
 
         /**
          * Traffic coming from the east road
          */
-        List<Point3D> roadERoutes2 = new LinkedList<>();
-        roadERoutes2.add(new Point3D(-5*roadEE.getRoadView().getRoadLength(),0,40));
+        List<Point3D> roadERoutes = new LinkedList<>();
+        roadERoutes.add(new Point3D(-5*roadEE.getRoadView().getRoadLength(),0,40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadEE.getRoadView().getLeftUpperCorner().getX()+roadEE.getRoadView().getRoadLength(),
                         roadEE.getRoadView().getLeftUpperCorner().getY()+roadEE.getRoadView().getLaneWidth()/3),
-                (int)(1000/sliderE.getValue()), roadERoutes2, roadEE.getRoadView().getLaneWidth()/3, roadEE.getRoadView().getLaneWidth()/3);
+                (int)(60000/sliderE.getValue()), roadERoutes, roadEE.getRoadView().getLaneWidth()/3, roadEE.getRoadView().getLaneWidth()/3);
         /**
          * Traffic coming from the north east road
          */
-        List<Point3D> roadNRoutes2 = new LinkedList<>();
-        roadNRoutes2.add(new Point3D(0,3*roadNE.getRoadView().getRoadLength(),40));
+        List<Point3D> roadNERoutes = new LinkedList<>();
+        roadNERoutes.add(new Point3D(0,3*roadNE.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadNE.getRoadView().getLeftUpperCorner().getX() + roadNE.getRoadView().getLaneWidth()/3,
                         roadNE.getRoadView().getLeftUpperCorner().getY()),
-                (int)(1000/ sliderNW.getValue()),roadNRoutes2,roadNE.getRoadView().getLaneWidth()/3, roadNE.getRoadView().getLaneWidth()/3);
+                (int)(60000/ sliderNE.getValue()),roadNERoutes,roadNE.getRoadView().getLaneWidth()/3, roadNE.getRoadView().getLaneWidth()/3);
         /**
          * Traffic coming from the south east road
          */
-        List<Point3D> roadSRoutes2 = new LinkedList<>();
-        roadSRoutes2.add(new Point3D(0,-3*roadSE.getRoadView().getRoadLength(),40));
+        List<Point3D> roadSERoutes = new LinkedList<>();
+        roadSERoutes.add(new Point3D(0,-3*roadSE.getRoadView().getRoadLength(),40));
         carModelGenerator.addRoadTraffic(new Point2D(
                         roadSE.getRoadView().getLeftUpperCorner().getX()+roadSE.getRoadView().getLaneWidth()+roadSE.getRoadView().getLaneWidth()/3,
                         roadSE.getRoadView().getLeftUpperCorner().getY()+roadSE.getRoadView().getRoadLength()),
-                (int)(1000/ sliderSW.getValue()),roadSRoutes2,roadSE.getRoadView().getLaneWidth()/3, roadSE.getRoadView().getLaneWidth()/3);
+                (int)(60000/ sliderSE.getValue()),roadSERoutes,roadSE.getRoadView().getLaneWidth()/3, roadSE.getRoadView().getLaneWidth()/3);
     }
 
     private void setUpRoadModelsAndTrafficLights(CanvasPane canvasPane) {
@@ -298,27 +313,53 @@ public class Controller implements Initializable{
     }
 
     private void setUpCarGenerationControl() {
-        Text textW = new Text("Road west car freq");
-        Text textN = new Text("Road north car freq");
-        Text textS = new Text("Road south car freq");
-        Text textE = new Text("Road east car freq");
+        Label textW = new Label("Left crossroads - road west");
+        Label textNW = new Label("Left crossroads - road north");
+        Label textSW = new Label("Left crossroads - road south");
+        Label textNE = new Label("Right crossroads - road north");
+        Label textSE = new Label("Right crossroads - road south");
+        Label textE = new Label("Right crossroads - road east");
+
+        textFieldW = new TextField();
+        textFieldW.setEditable(false);
+        textFieldW.setMaxWidth(50);
+
+        textFieldNW = new TextField();
+        textFieldNW.setEditable(false);
+        textFieldNW.setMaxWidth(50);
+
+        textFieldSW = new TextField();
+        textFieldSW.setEditable(false);
+        textFieldSW.setMaxWidth(50);
+
+        textFieldNE = new TextField();
+        textFieldNE.setEditable(false);
+        textFieldNE.setMaxWidth(50);
+
+        textFieldSE = new TextField();
+        textFieldSE.setEditable(false);
+        textFieldSE.setMaxWidth(50);
+
+        textFieldE = new TextField();
+        textFieldE.setEditable(false);
+        textFieldE.setMaxWidth(50);
 
         /**
-         * Car frequency sliders - range from 0.1 car/second to 10 cars/second, default - 1 car/second
+         * Car frequency sliders - range from 5 cars per minute to 60 cars per minute
          */
-        sliderW = new Slider(0.1, 2, 0.1);
-        sliderNW = new Slider(0.1, 2, 0.1);
-        sliderSW = new Slider(0.1, 2, 0.1);
-        sliderE = new Slider(0.1, 2, 0.1);
+        sliderW = new Slider(5, 60, 10);
+        sliderNW = new Slider(5, 60, 10);
+        sliderSW = new Slider(5, 60, 10);
+        sliderNE = new Slider(5, 60, 10);
+        sliderSE = new Slider(5, 60, 10);
+        sliderE = new Slider(5, 60, 10);
 
-        textfieldW = new TextField();
-        textfieldNW = new TextField();
-        textfieldSW = new TextField();
-        textfieldE = new TextField();
-        textfieldW.setMaxWidth(50);
-        textfieldNW.setMaxWidth(50);
-        textfieldSW.setMaxWidth(50);
-        textfieldE.setMaxWidth(50);
+        textFieldW.setText(Integer.toString((int)sliderW.getValue()));
+        textFieldNW.setText(Integer.toString((int)sliderNW.getValue()));
+        textFieldSW.setText(Integer.toString((int)sliderSW.getValue()));
+        textFieldNE.setText(Integer.toString((int)sliderNE.getValue()));
+        textFieldSE.setText(Integer.toString((int)sliderSE.getValue()));
+        textFieldE.setText(Integer.toString((int)sliderE.getValue()));
 
         buttonPlay = new Button("Play");
         buttonStop = new Button("Stop");
@@ -331,25 +372,36 @@ public class Controller implements Initializable{
 
         gridPane.setAlignment(Pos.CENTER);
 
-        gridPane.add(textW, 0, 0);
-        gridPane.add(sliderW, 1, 0);
-        gridPane.add(textfieldW, 2, 0);
+        Label generationControlPanelLabel = new Label("Car generation frequency on each road [car/minute]");
+        generationControlPanelLabel.setStyle("-fx-font-weight: bolder");
+        gridPane.add(generationControlPanelLabel, 0,0,3,1);
 
-        gridPane.add(textN, 0, 1);
-        gridPane.add(sliderNW, 1, 1);
-        gridPane.add(textfieldNW, 2, 1);
+        gridPane.add(textW, 0, 1);
+        gridPane.add(sliderW, 1, 1);
+        gridPane.add(textFieldW, 2,1);
 
-        gridPane.add(textS, 0, 2);
-        gridPane.add(sliderSW, 1, 2);
-        gridPane.add(textfieldSW, 2, 2);
+        gridPane.add(textNW, 0, 2);
+        gridPane.add(sliderNW, 1, 2);
+        gridPane.add(textFieldNW, 2, 2);
 
+        gridPane.add(textSW, 0, 3);
+        gridPane.add(sliderSW, 1, 3);
+        gridPane.add(textFieldSW,2, 3);
 
-        gridPane.add(textE, 0, 3);
-        gridPane.add(sliderE, 1, 3);
-        gridPane.add(textfieldE, 2, 3);
+        gridPane.add(textNE, 0, 4);
+        gridPane.add(sliderNE, 1, 4);
+        gridPane.add(textFieldNE, 2, 4);
 
-        gridPane.add(buttonPlay, 0, 6);
-        gridPane.add(buttonStop, 1, 6);
+        gridPane.add(textSE, 0, 5);
+        gridPane.add(sliderSE, 1, 5);
+        gridPane.add(textFieldSE, 2, 5);
+
+        gridPane.add(textE, 0, 6);
+        gridPane.add(sliderE, 1, 6);
+        gridPane.add(textFieldE, 2,6);
+
+        gridPane.add(buttonPlay, 0, 8);
+        gridPane.add(buttonStop, 1, 8);
     }
 
     private void stopSimulation() {

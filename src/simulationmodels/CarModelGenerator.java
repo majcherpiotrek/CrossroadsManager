@@ -93,10 +93,12 @@ public class CarModelGenerator{
     }
 
     public void stopGenerator() throws InterruptedException {
-        System.out.println("Stopping the car model generator...\n");
-        executorService.shutdownNow();
-        executorService.awaitTermination(5, TimeUnit.SECONDS);
-        System.out.println("Car model generator stopped!\n");
+        if (isRunning) {
+            System.out.println("Stopping the car model generator...\n");
+            executorService.shutdownNow();
+            executorService.awaitTermination(5, TimeUnit.SECONDS);
+            System.out.println("Car model generator stopped!\n");
+        }
     }
 
     public void setTimeBetweenCars(int generatorId, int value) {
