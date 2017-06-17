@@ -1,5 +1,6 @@
 package simulationmodels;
 
+import javafx.animation.Interpolator;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Transition;
 import javafx.animation.TranslateTransition;
@@ -64,6 +65,7 @@ public class CarModel extends Rectangle{
 
         t.setDuration(Duration.seconds(duration));
         t.setCycleCount(1);
+        t.setInterpolator(Interpolator.LINEAR);
         t.setOnFinished(e ->{
             //one transition finished
             this.transitionsList.poll();
