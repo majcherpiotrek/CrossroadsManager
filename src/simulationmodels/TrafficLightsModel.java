@@ -58,6 +58,7 @@ public class TrafficLightsModel implements Runnable{
                     Thread.sleep(redLightDuration);
                 }
         }catch (InterruptedException ex){
+            trafficLightsView.changeLight(TrafficLightsView.Light.RED);
             System.out.println("Traffic lights modelling stopped.");
         }
     }

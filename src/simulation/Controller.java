@@ -311,7 +311,13 @@ public class Controller implements Initializable{
         }
 
         if (lightsController != null) {
-            lightsController.stopLights();
+            try {
+                lightsController.stopLights();
+            } catch (InterruptedException e) {
+                System.err.println("Couldn't stop the lights modelling!");
+                e.printStackTrace();
+                System.exit(1);
+            }
         }
 
         Platform.runLater(() -> anchorPane.getChildren().clear());
