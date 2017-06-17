@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Piotrek on 13.06.2017.
@@ -33,16 +34,12 @@ public class TrafficLightsController {
         }
     }
 
-    public void stopLights() {
-        Runnable stopTask = () -> executorService.shutdown();
-        Thread t = new Thread(stopTask);
-        System.out.println("Stopping the traffic lights controller...\n");
-        t.start();
-        try {
-            t.join();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+    public void stopLights() throws InterruptedException {
+        System.out.println("Stopping the lights...\n");
+        if (!executorService.isTerminated()) {
+            executorService.shutdownNow();
+            executorService.awaitTermination(5, TimeUnit.SECONDS);
         }
-        System.out.println("Traffic lights controller stopped!\n");
+        System.out.println("Lights stopped\n");
     }
 }

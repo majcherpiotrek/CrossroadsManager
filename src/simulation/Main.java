@@ -24,9 +24,12 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("sample.fxml"));
-        primaryStage.setTitle("Hello World");
-        primaryStage.setScene(new Scene(root, 1200, 600));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("sample.fxml"));
+        Parent root = loader.load();
+        Controller controller = loader.getController();
+        controller.setUpOnCloseRequest(primaryStage);
+        primaryStage.setTitle("Crossroads Manager Simulation");
+        primaryStage.setScene(new Scene(root, 1200, 300));
         primaryStage.setResizable(false);
         primaryStage.show();
     }
