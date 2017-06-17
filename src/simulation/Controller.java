@@ -155,6 +155,7 @@ public class Controller implements Initializable{
                 int t = (int)(60000/ sliderNW.getValue());
                 carModelGenerator.setTimeBetweenCars(0, t);
                 textFieldNW.setText(Integer.toString((int)sliderNW.getValue()));
+                setTrafficLightsDuration();
             }
         });
 
@@ -163,6 +164,7 @@ public class Controller implements Initializable{
                 int t = (int)(60000/ sliderSW.getValue());
                 carModelGenerator.setTimeBetweenCars(2, t);
                 textFieldSW.setText(Integer.toString((int)sliderSW.getValue()));
+                setTrafficLightsDuration();
             }
         });
 
@@ -171,6 +173,7 @@ public class Controller implements Initializable{
                 int t = (int)(60000/ sliderNE.getValue());
                 carModelGenerator.setTimeBetweenCars(4, t);
                 textFieldNE.setText(Integer.toString((int)sliderNE.getValue()));
+                setTrafficLightsDuration();
             }
         });
 
@@ -179,6 +182,7 @@ public class Controller implements Initializable{
                 int t = (int)(60000/ sliderSE.getValue());
                 carModelGenerator.setTimeBetweenCars(5, t);
                 textFieldSE.setText(Integer.toString((int)sliderSE.getValue()));
+                setTrafficLightsDuration();
             }
         });
 
@@ -187,6 +191,7 @@ public class Controller implements Initializable{
                 int t = (int)(60000/sliderW.getValue());
                 carModelGenerator.setTimeBetweenCars(1, t);
                 textFieldW.setText(Integer.toString((int)sliderW.getValue()));
+                setTrafficLightsDuration();
             }
         });
 
@@ -195,6 +200,7 @@ public class Controller implements Initializable{
                 int t = (int)(60000/sliderE.getValue());
                 carModelGenerator.setTimeBetweenCars(3, t);
                 textFieldE.setText(Integer.toString((int)sliderE.getValue()));
+                setTrafficLightsDuration();
             }
         });
     }
@@ -299,7 +305,7 @@ public class Controller implements Initializable{
     }
 
     private void setTrafficLightsDuration() {
-        final int MAX_QUEUE_LENGTH = 1;
+        final int MAX_QUEUE_LENGTH = 3;
         final int freqW = (int)sliderW.getValue();
         final int freqNW = (int)sliderNW.getValue();
         final int freqSW = (int)sliderSW.getValue();
@@ -321,17 +327,30 @@ public class Controller implements Initializable{
 
         //Count the time necessary to leave the crossroads
         double crossroadsWidth = crossroadsViewWest.getCrossroadsWidth();
-        int timeToLeaveCrossroads = (int)( (1000 * crossroadsWidth) / (MAIN_ROAD_SPEED * 2) );
-
+        int timeToLeaveCrossroads = (int)( (1000 * crossroadsWidth) / MAIN_ROAD_SPEED );
+        timeToLeaveCrossroads *= 1.5;
         int verticalRoadRedDurationCrossroadsWest = Math.min(queueCreationTimeNW, queueCreationTimeSW) - timeToLeaveCrossroads;
         int verticalRoadRedDurationCrossroadsEast = Math.min(queueCreationTimeNE, queueCreationTimeSE) - timeToLeaveCrossroads;
         int horizontalRoadRedDuration = Math.min(queueCreationTimeW, queueCreationTimeE) - timeToLeaveCrossroads;
 
+        int shortest = Math.min(verticalRoadRedDurationCrossroadsEast, verticalRoadRedDurationCrossroadsWest);
+        shortest = Math.min(shortest, horizontalRoadRedDuration);
+        int addition = 0;
+        while (shortest - timeToLeaveCrossroads <= 2*timeToLeaveCrossroads) {
+            shortest += 10;
+            addition += 10;
+        }
+
+        verticalRoadRedDurationCrossroadsEast += addition;
+        verticalRoadRedDurationCrossroadsWest += addition;
+        horizontalRoadRedDuration += addition;
 
         int cycleDuration = horizontalRoadRedDuration + Math.max(verticalRoadRedDurationCrossroadsEast, verticalRoadRedDurationCrossroadsWest) + 2*timeToLeaveCrossroads;
-        System.out.println("ttl: " + timeToLeaveCrossroads);
+        System.out.println("\nttl: " + timeToLeaveCrossroads);
+        System.out.println("time creation NW: " + queueCreationTimeNW);
         System.out.println("tRv: " + (verticalRoadRedDurationCrossroadsEast + timeToLeaveCrossroads));
         System.out.println("tGv: " + (horizontalRoadRedDuration - timeToLeaveCrossroads));
+        System.out.println("time creation W: " + queueCreationTimeW);
         System.out.println("tRh: " + (horizontalRoadRedDuration + timeToLeaveCrossroads));
         System.out.println("tGh: " + (verticalRoadRedDurationCrossroadsWest - timeToLeaveCrossroads));
 
@@ -353,18 +372,20 @@ public class Controller implements Initializable{
             //Horizontal road east crossroads
             roadWE.getTrafficLightsModelEndB().setOffset(offsetBetweenCrossroads);
             roadWE.getTrafficLightsModelEndB().setRedLightDuration(horizontalRoadRedDuration + timeToLeaveCrossroads);
-            roadWE.getTrafficLightsModelEndB().setGreenLightDuration(verticalRoadRedDurationCrossroadsWest - timeToLeaveCrossroads);
+            roadWE.getTrafficLightsModelEndB().setGreenLightDuration(verticalRoadRedDurationCrossroadsEast - timeToLeaveCrossroads);
             roadEE.getTrafficLightsModelEndA().setOffset(offsetBetweenCrossroads);
             roadEE.getTrafficLightsModelEndA().setRedLightDuration(horizontalRoadRedDuration + timeToLeaveCrossroads);
-            roadEE.getTrafficLightsModelEndA().setGreenLightDuration(verticalRoadRedDurationCrossroadsWest - timeToLeaveCrossroads);
+            roadEE.getTrafficLightsModelEndA().setGreenLightDuration(verticalRoadRedDurationCrossroadsEast - timeToLeaveCrossroads);
 
             // Vertical road east crossroads
             roadNE.getTrafficLightsModelEndB().setOffset(offsetBetweenCrossroads + verticalRoadRedDurationCrossroadsEast + timeToLeaveCrossroads);
-            roadNE.getTrafficLightsModelEndB().setRedLightDuration(verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+            roadNE.getTrafficLightsModelEndB().setRedLightDuration(verticalRoadRedDurationCrossroadsEast + timeToLeaveCrossroads);
             roadNE.getTrafficLightsModelEndB().setGreenLightDuration(horizontalRoadRedDuration - timeToLeaveCrossroads);
             roadSE.getTrafficLightsModelEndA().setOffset(offsetBetweenCrossroads + verticalRoadRedDurationCrossroadsEast + timeToLeaveCrossroads);
-            roadSE.getTrafficLightsModelEndA().setRedLightDuration(verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+            roadSE.getTrafficLightsModelEndA().setRedLightDuration(verticalRoadRedDurationCrossroadsEast + timeToLeaveCrossroads);
             roadSE.getTrafficLightsModelEndA().setGreenLightDuration(horizontalRoadRedDuration - timeToLeaveCrossroads);
+        } else {
+
         }
     }
 
