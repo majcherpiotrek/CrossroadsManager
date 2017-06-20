@@ -345,7 +345,6 @@ public class Controller implements Initializable{
         verticalRoadRedDurationCrossroadsWest += addition;
         horizontalRoadRedDuration += addition;
 
-        int cycleDuration = horizontalRoadRedDuration + Math.max(verticalRoadRedDurationCrossroadsEast, verticalRoadRedDurationCrossroadsWest) + 2*timeToLeaveCrossroads;
         System.out.println("\nttl: " + timeToLeaveCrossroads);
         System.out.println("time creation NW: " + queueCreationTimeNW);
         System.out.println("tRv: " + (verticalRoadRedDurationCrossroadsEast + timeToLeaveCrossroads));
