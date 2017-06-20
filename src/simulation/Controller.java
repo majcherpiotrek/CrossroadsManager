@@ -375,7 +375,7 @@ public class Controller implements Initializable{
         roadEW.getTrafficLightsModelEndA().setRedLightDuration(horizontalRoadRedDuration + timeToLeaveCrossroads);
         System.out.println("red light EW: " + roadEW.getTrafficLightsModelEndA().getRedLightDuration());
         roadEW.getTrafficLightsModelEndA().setGreenLightDuration(verticalRoadRedDurationCrossroadsWest - timeToLeaveCrossroads);
-        System.out.println("red light EW: " + roadEW.getTrafficLightsModelEndA().getGreenLightDuration());
+        System.out.println("green light EW: " + roadEW.getTrafficLightsModelEndA().getGreenLightDuration());
 
         //Horizontal road east crossroads
         roadWE.getTrafficLightsModelEndB().setRedLightDuration(horizontalRoadRedDuration + timeToLeaveCrossroads);
