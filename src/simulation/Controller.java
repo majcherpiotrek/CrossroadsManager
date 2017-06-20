@@ -345,16 +345,18 @@ public class Controller implements Initializable{
         verticalRoadRedDurationCrossroadsWest += addition;
         horizontalRoadRedDuration += addition;
 
-        System.out.println("\nttl: " + timeToLeaveCrossroads);
-        System.out.println("time creation NW: " + queueCreationTimeNW);
-        System.out.println("tRv: " + (verticalRoadRedDurationCrossroadsEast + timeToLeaveCrossroads));
-        System.out.println("tGv: " + (horizontalRoadRedDuration - timeToLeaveCrossroads));
-        System.out.println("time creation W: " + queueCreationTimeW);
-        System.out.println("tRh: " + (horizontalRoadRedDuration + timeToLeaveCrossroads));
-        System.out.println("tGh: " + (verticalRoadRedDurationCrossroadsWest - timeToLeaveCrossroads));
+        System.out.println("time to leave crossroads: " + timeToLeaveCrossroads);
+        System.out.println("freq W: " + freqW);
+        System.out.println("freq NW: " + freqNW);
+        System.out.println("freq SW: " + freqSW);
+        System.out.println("freq NE: " + freqNE);
+        System.out.println("freq SE: " + freqSE);
+        System.out.println("freq E: " + freqE);
+
 
         boolean westCrossroadsMoreBusy = verticalRoadRedDurationCrossroadsWest < verticalRoadRedDurationCrossroadsEast;
-
+        System.out.println("More busy crossroads: " + (westCrossroadsMoreBusy ? "west" : "east"));
+        System.out.println("green line offset: " + offsetBetweenCrossroads);
         roadWE.getTrafficLightsModelEndB().setOffset(westCrossroadsMoreBusy ? offsetBetweenCrossroads : 0);
         roadEE.getTrafficLightsModelEndA().setOffset(westCrossroadsMoreBusy ? offsetBetweenCrossroads : 0);
         roadWW.getTrafficLightsModelEndB().setOffset(westCrossroadsMoreBusy ? 0 : offsetBetweenCrossroads);
@@ -367,27 +369,43 @@ public class Controller implements Initializable{
 
         //horizontal road west crossroads
         roadWW.getTrafficLightsModelEndB().setRedLightDuration(horizontalRoadRedDuration + timeToLeaveCrossroads);
+        System.out.println("red light WW: " + roadWW.getTrafficLightsModelEndB().getRedLightDuration());
         roadWW.getTrafficLightsModelEndB().setGreenLightDuration(verticalRoadRedDurationCrossroadsWest - timeToLeaveCrossroads);
+        System.out.println("green light WW: " + roadWW.getTrafficLightsModelEndB().getGreenLightDuration());
         roadEW.getTrafficLightsModelEndA().setRedLightDuration(horizontalRoadRedDuration + timeToLeaveCrossroads);
+        System.out.println("red light EW: " + roadEW.getTrafficLightsModelEndA().getRedLightDuration());
         roadEW.getTrafficLightsModelEndA().setGreenLightDuration(verticalRoadRedDurationCrossroadsWest - timeToLeaveCrossroads);
+        System.out.println("red light EW: " + roadEW.getTrafficLightsModelEndA().getGreenLightDuration());
 
         //Horizontal road east crossroads
         roadWE.getTrafficLightsModelEndB().setRedLightDuration(horizontalRoadRedDuration + timeToLeaveCrossroads);
+        System.out.println("red light WE: " + roadWE.getTrafficLightsModelEndB().getRedLightDuration());
         roadWE.getTrafficLightsModelEndB().setGreenLightDuration(verticalRoadRedDurationCrossroadsEast - timeToLeaveCrossroads);
+        System.out.println("green light WE: " + roadWE.getTrafficLightsModelEndB().getGreenLightDuration());
         roadEE.getTrafficLightsModelEndA().setRedLightDuration(horizontalRoadRedDuration + timeToLeaveCrossroads);
+        System.out.println("red light EE: " + roadEE.getTrafficLightsModelEndA().getRedLightDuration());
         roadEE.getTrafficLightsModelEndA().setGreenLightDuration(verticalRoadRedDurationCrossroadsEast - timeToLeaveCrossroads);
+        System.out.println("green light EE: " + roadEE.getTrafficLightsModelEndA().getGreenLightDuration());
 
         // Vertical road west crossroads
         roadNW.getTrafficLightsModelEndB().setRedLightDuration(verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+        System.out.println("red light NW: " + roadNW.getTrafficLightsModelEndB().getRedLightDuration());
         roadNW.getTrafficLightsModelEndB().setGreenLightDuration(horizontalRoadRedDuration - timeToLeaveCrossroads);
+        System.out.println("green light NW: " + roadNW.getTrafficLightsModelEndB().getGreenLightDuration());
         roadSW.getTrafficLightsModelEndA().setRedLightDuration(verticalRoadRedDurationCrossroadsWest + timeToLeaveCrossroads);
+        System.out.println("red light SW: " + roadSW.getTrafficLightsModelEndA().getRedLightDuration());
         roadSW.getTrafficLightsModelEndA().setGreenLightDuration(horizontalRoadRedDuration - timeToLeaveCrossroads);
+        System.out.println("green light SW: " + roadSW.getTrafficLightsModelEndA().getGreenLightDuration());
 
         // Vertical road east crossroads
         roadNE.getTrafficLightsModelEndB().setRedLightDuration(verticalRoadRedDurationCrossroadsEast + timeToLeaveCrossroads);
+        System.out.println("red light NE: " + roadNE.getTrafficLightsModelEndB().getRedLightDuration());
         roadNE.getTrafficLightsModelEndB().setGreenLightDuration(horizontalRoadRedDuration - timeToLeaveCrossroads);
+        System.out.println("green light NE: " + roadNE.getTrafficLightsModelEndB().getGreenLightDuration());
         roadSE.getTrafficLightsModelEndA().setRedLightDuration(verticalRoadRedDurationCrossroadsEast + timeToLeaveCrossroads);
+        System.out.println("red light SE: " + roadSE.getTrafficLightsModelEndA().getRedLightDuration());
         roadSE.getTrafficLightsModelEndA().setGreenLightDuration(horizontalRoadRedDuration - timeToLeaveCrossroads);
+        System.out.println("green light SE: " + roadSE.getTrafficLightsModelEndA().getGreenLightDuration());
 
     }
 
